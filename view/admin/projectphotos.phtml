@@ -1,0 +1,47 @@
+<?php if( !empty($this->data) ) : ?>
+    <div class="photos-frame" style="height:180px; width: 100%; overflow: auto;">
+        <?php foreach($this->data as $key => $value) : ?>
+            <div style="float:left; margin: 4px; padding: 4px; background-color: #eee; border-radius: 5px 5px 5px 5px; text-align: center;">
+                <img src="/images/cropr_100x100/<?= $value->pp_src ?>" /><br/>
+                <?php if($key) : ?>
+                    <form method="post" action="/admin/switchprojectphoto/" style="display: inline;">
+                        <input type="hidden" name="data[0][pp_ord]" value="<?= $this->data[$key]->pp_ord ?>" />
+                        <input type="hidden" name="data[0][pp_id]" value="<?= $this->data[($key - 1)]->pp_id ?>" />
+                        <input type="hidden" name="data[1][pp_ord]" value="<?= $this->data[($key - 1)]->pp_ord ?>" />
+                        <input type="hidden" name="data[1][pp_id]" value="<?= $this->data[$key]->pp_id ?>" />
+                        <input type="hidden" name="id" value="<?= $this->data[$key]->pp_p_id ?>" />
+                        <input type="submit" value="<" />
+                    </form>
+                <?php endif; ?>
+                <span class="order"><?= (!$key ? 'Глав.' : $key) ?></span>
+                <?php if( ($key + 1) != count($this->data) ) : ?>
+                    <form method="post" action="/admin/switchprojectphoto/" style="display: inline;">
+                        <input type="hidden" name="data[0][pp_ord]" value="<?= $this->data[$key]->pp_ord ?>" />
+                        <input type="hidden" name="data[0][pp_id]" value="<?= $this->data[($key + 1)]->pp_id ?>" />
+                        <input type="hidden" name="data[1][pp_ord]" value="<?= $this->data[($key + 1)]->pp_ord ?>" />
+                        <input type="hidden" name="data[1][pp_id]" value="<?= $this->data[$key]->pp_id ?>" />
+                        <input type="hidden" name="id" value="<?= $this->data[$key]->pp_p_id ?>" />
+                        <input type="submit" value=">" />
+                    </form>
+                <?php endif; ?>
+                <br/>
+                <form action="/admin/dropprojectphoto/" id="deletephoto<?= $value->pp_ord ?>" method="post" style="text-align: center; margin: 0px;">
+                    <input type="hidden" name="pp_src" value="<?= $value->pp_src ?>" />
+                    <input type="hidden" name="pp_id" value="<?= $value->pp_id ?>" />
+                    <input type="hidden" name="pp_p_id" value="<?= $value->pp_p_id ?>" />
+                    <input type="submit" value="Удалить" />
+                </form>
+            </div>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>
+<div style="clear: both"></div>
+<?php if($this->p_id !== null) : ?>
+<div id="add-photo">
+    <form method="post" action="/admin/addprojectphoto/" enctype="multipart/form-data" >
+        <input type="file" name="pp_src" />
+        <input type="hidden" value="<?= $this->p_id ?>" name="pp_p_id" />
+        <input type="submit" value="Загрузить фотографию" />
+    </form>
+</div>
+<?php endif; ?>

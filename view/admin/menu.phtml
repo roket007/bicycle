@@ -1,0 +1,101 @@
+<div style="margin:10px auto; width: 60%;">
+    <style>
+        .name {
+            float:left; width: 150px; margin-right: 5px;
+        }
+        
+        .select {
+            float:left; width: 50px; margin-right: 5px;
+        }
+    </style>
+    <form id="menuadd" method="post">
+    <table align="center">
+        <thead>
+            <tr style="background:#FF7F0B; color: #fff;">
+                <td align="center">Укр.</td>
+                <td align="center">Рус.</td>
+                <td align="center">Отобр.</td>
+                <td align="center">URL</td>
+                <td align="center"></td>
+                <td align="center"></td>
+            </tr>
+        </thead>
+        <tbody>
+    <?php foreach($this->data as $key => $value) : ?>
+            <tr id="menu<?= $key ?>">
+                <input name="data[<?= $value->m_id ?>]" class="m_id" id="m_id" value="<?= $value->m_id ?>" type="hidden">
+                <td><input style="width: 150px;" name="data[<?= $value->m_id ?>][m_name_ua]" value="<?= $value->m_name_ua ?>" type="text" placeholder="Название на украинском" /></td>
+                <td><input style="width: 150px;" name="data[<?= $value->m_id ?>][m_name_ru]" value="<?= $value->m_name_ru ?>" type="text" placeholder="Название на русском" /></td>
+                <input name="data[<?= $value->m_id ?>][m_parent_id]" value="<?= $value->m_parent_id ?>" type="hidden" />
+                <td>
+                    <select style="width: 50px;" name="data[<?= $value->m_id ?>][m_state]">
+                        <?php if($value->m_state) : ?>
+                            <option value="0">Нет</option>
+                            <option value="1" selected="selected">Да</option>
+                        <?php else : ?>
+                            <option value="0" selected="selected">Нет</option>
+                            <option value="1">Да</option>
+                        <?php endif; ?>
+                    </select>
+                </td>
+                <td><input style="width: 150px;" name="data[<?= $value->m_id ?>][m_url]" value="<?= $value->m_url ?>" type="text" placeholder="URL" /></td>
+                <td><input type="button" class="delte-menu-point" value="Удалить" id="<?= $value->m_id ?>" /></td>
+                <td>
+                    <?php if( isset($this->data[ ($key - 1) ]) ) : ?>
+                        <input id="<?= $key ?>" type="button" data-to="<?= $this->data[ ($key - 1) ]->m_id ?>" data-from="<?= $value->m_id ?>" class="switch-menu-point" value="&and;" />
+                    <?php endif; ?>
+                    <?php if( isset($this->data[ ($key + 1) ]) ) : ?>
+                        <input id="<?= $key ?>" type="button" data-to="<?= $this->data[ ($key + 1) ]->m_id ?>" data-from="<?= $value->m_id ?>" class="switch-menu-point" value="&or;" />
+                    <?php endif; ?>
+                </td>
+            </tr>
+    <?php endforeach; ?>
+        </tbody>
+    </table>
+        <input type="hidden" name="save" value="1" />
+    </form>
+    <p align="center"><input  type="button" value="Добавить пункт меню" id="add-menu" /> <input  type="button" onclick="document.forms.menuadd.submit()" value="Сохранить" id="add-menu" /></p>
+    <script type="text/javascript">
+        $('.delte-menu-point').bind("click", function() {
+            $.post('/admin/menudelete/', {id : $(this).attr('id')}, function(data) {
+                if(data == '0') {
+                    alert('Ошибка удаления меню!');
+                } else {
+                    document.location.reload(true);
+                }
+            })
+        });
+        
+        $('.switch-menu-point').bind('click', function() {
+            $.post('/admin/switchmenu/', {from : $(this).data('from'), to: $(this).data('to')}, function(data) {
+                if(data == '0') {
+                    alert('Ошибка смены позиции пункта меню!');
+                } else {
+                    window.location.reload(true);
+                }
+            });
+        });
+        
+        $('#add-menu').bind("click", function() {
+            var _new_id = ( $('.m_id:last').val() * 1 ) + (1 * 1);
+            var _new_class = 'class-' + _new_id;
+            $('tbody').append('\
+                <tr class="' + _new_class + '">\
+                <input name="data[' + _new_id + ']" class="m_id" id="m_id" value="' + _new_id + '" type="hidden">\
+                <td><input style="width: 150px;" name="data[' + _new_id + '][m_name_ua]" value="" type="text" placeholder="Название на украинском" /></td>\
+                <td><input style="width: 150px;" name="data[' + _new_id + '][m_name_ru]" value="" type="text" placeholder="Название на русском" /></td>\
+                <input name="data[' + _new_id + '][m_parent_id]" value="" type="hidden" />\
+                <td>\
+                    <select style="width: 50px;" name="data[' + _new_id + '][m_state]">\
+                        <option value="0">Нет</option>\
+                        <option value="1" selected="selected">Да</option>\
+                    </select>\
+                </td>\
+                <td><input style="width: 150px;" name="data[' + _new_id + '][m_url]" value="" type="text" placeholder="URL" /></td>\
+                <td><input type="button" onclick="$(\'.' + _new_class + '\').remove()" value="Удалить" id="' + _new_id + '" /></td>\\n\
+                <td></td>\
+            </tr>\
+            ')
+        })
+    </script>
+</div>

@@ -1,0 +1,13 @@
+<!--USERS-STATS-->
+    <div id="users_stats" class="grid-75 mobile-grid-100 tablet-grid-90 push-15 tablet-push-10"> 
+        <div>
+            <img alt="<?= C::getLanguageString('moneycount_block_1') ?>" src="/img/icon_all_donors.png" width="82" height="52"> 
+            <?= C::getLanguageString('moneycount_block_2') ?><br> <b><?= $this->user_count ?></b>
+        </div>	
+        <div class="hide-on-mobile"><img alt="" src="/img/icon_hart_arrows.png" width="300" height="74"></div>
+        <div>
+            <img alt="<?= C::getLanguageString('moneycount_block_3') ?>" src="/img/icon_all_donations.png" width="72" height="54">
+            <?= C::getLanguageString('moneycount_block_4') ?><br> <b><?= $this->money_count ?> грн</b>
+        </div>	
+    </div>
+<!--END-USERS-->

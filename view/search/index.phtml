@@ -1,0 +1,40 @@
+<div class="grid-container"> 
+    <div class="grid-100 mobile-grid-100 tablet-grid-100"> 
+        <div id="main_content" class="clearfix">
+            <?php if($this->error): ?>
+                <p style="color: red;"><?= C::getLanguageString('search_error') ?></p>
+            <?php endif; ?>
+            <form action="<?= C::uri( array('search') ) ?>" method="POST">
+                <input style="width: 90%; float: left;" type="text" onfocus="if (this.value=='<?= C::getLanguageString('search') ?>') this.value='';" onblur="if (this.value=='') this.value='<?= C::getLanguageString('search') ?>';" value="<?= ( !empty($this->query) ? $this->query : C::getLanguageString('search') ) ?>" size="30" maxlength="40" name="query">
+                <input style="padding: 2px;position: inherit;top: -1px;float: right;width: 8%;z-index: 1;margin: 0;height: 25px;" type="submit" src="/img/button_finder.png" value="<?= C::getLanguageString('searching') ?>">
+            </form>
+            <div style="padding: 5px 0px; min-height: 300px; margin-top: 25px;">
+            <?php if(!$this->error): ?>
+                <?php if( !empty($this->data) ) : ?>
+                    <?php foreach($this->data as $value) : ?>
+                        <div class="project clearfix" style="clear:both;">
+                            <div class="clearfix">
+                                <a href="<?= '/' . $value->pl_lang . '/projects/' . $value->p_id . '-' . $value->pl_alias . '/' ?>" class="article"><?= $value->pl_title ?></a>
+                                <span class="date_publish"><?= C::getLanguageString('date_start') ?> <?= date( "d.m.Y", strtotime($value->p_date_create) ); ?></span>
+                            </div>
+                            <div class="clearfix">
+                                <p><?= array_shift( explode("{read_more}", $value->pl_text) ) ?></p>
+                                <p class="voted"><?= C::getLanguageString('projects_show_voted') ?> <b><?= $value->p_count_vote ?></b></p>
+                            </div>
+                            <div class="clearfix">	
+                                <span class="budget"><?= C::getLanguageString('projects_show_need') ?> <?= $value->p_need ?> грн.</span>
+                                <span class="needed"><?= C::getLanguageString('projects_show_less') ?> <?= ($value->p_need > $value->p_current ? $value->p_need - $value->p_current : 0) ?> грн.</span>
+                                <div class="progress">
+                                    <div class="bar" style="width:<?= ( $value->p_need > $value->p_current ? ( ($value->p_current / $value->p_need) * 100 ) : '100' ) ?>%;"></div>
+                                </div>
+                            </div>	
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                <p><?= C::getLanguageString('search_clean') ?></p>
+                <?php endif; ?>
+            <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>

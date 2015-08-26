@@ -1,0 +1,55 @@
+<style>
+    .adminmenu li {
+        list-style: none;
+        display: inline;
+        padding: 0px 5px;
+    }
+    
+    .adminmenu li a{
+        outline: none;
+        text-decoration: none;
+        font-size: 12px;
+        color: #FF7F0B;
+        background: #fff;
+        padding: 3px;
+        border-radius: 6px;
+        font-weight: bold;
+    }
+    
+    .adminmenu li a.active{
+        background-color: #FF7F0B;
+        color: #fff;
+    }
+    
+    .adminmenu li a:hover{
+        background-color: #FF7F0B;
+        color: #fff;
+        box-shadow: 1px 1px 3px #000;
+    }
+    
+    .adminmenu {
+        width: 100%;
+        min-width: 700px;
+        text-align: center;
+        margin: 20px 0px;
+        clear: both;
+        padding: 0px;
+        height: 50px;
+        line-height: 48px;
+        background: #0057ad;
+    }
+</style>
+<h2 align="center" style="color:#FF7F0B;">Панель администрирования - Lovechernivtsi</h2>
+<ul class="adminmenu">
+    <li><a href="/" class="">На сайт</a></li>
+    <li><a href="/admin/projects/" class="<?= ($_SERVER['REQUEST_URI'] == '/admin/projects/' ? "active" : '') ?>">Проекты</a></li>
+    <li><a href="/admin/users/" class="<?= ($_SERVER['REQUEST_URI'] == '/admin/users/' ? "active" : '') ?>">Пользователи</a></li>
+    <li><a href="/admin/staticpage/" class="<?= ($_SERVER['REQUEST_URI'] == '/admin/staticpage/' ? "active" : '') ?>">Тексты разделов</a></li>
+    <li><a href="/admin/lang/" class="<?= ($_SERVER['REQUEST_URI'] == '/admin/lang/' ? "active" : '') ?>">Настройка языковых констант</a></li>
+    <li><a href="/admin/breadcrumbs/" class="<?= ($_SERVER['REQUEST_URI'] == '/admin/breadcrumbs/' ? "active" : '') ?>">Хлебные крошки</a></li>
+    <li><a href="/admin/metadata/" class="<?= ($_SERVER['REQUEST_URI'] == '/admin/metadata/' ? "active" : '') ?>">Мета данные разделов</a></li>
+    <li><a href="/admin/menu/" class="<?= ($_SERVER['REQUEST_URI'] == '/admin/menu/' ? "active" : '') ?>">Настройка меню</a></li>
+    <li><a href="/admin/cache/" class="<?= ($_SERVER['REQUEST_URI'] == '/admin/cache/' ? "active" : '') ?>">Кэш</a></li>
+    <li><a href="/admin/system/" class="<?= ($_SERVER['REQUEST_URI'] == '/admin/system/' ? "active" : '') ?>">Системные пути</a></li>
+    <li><a href="/admin/settings/" class="<?= ($_SERVER['REQUEST_URI'] == '/admin/settings/' ? "active" : '') ?>">Настройки</a></li>
+</ul>

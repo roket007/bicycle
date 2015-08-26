@@ -1,0 +1,274 @@
+<style>
+    .lang-title {
+        text-align: center;
+        font-size: 16px;
+        font-weight: bold;
+        background: #FF7F0B;
+        color: #fff;
+    }
+    
+    .lang-pack {
+        max-height: 300px;
+        overflow: auto;
+        border: 1px solid;
+        font-size: 12px;
+    }
+    
+    .selected {
+        background-color: #66cc00 !important;
+        color: #000;
+    }
+    
+    .per_data {
+        border-bottom:1px solid #000;
+        padding: 2px;
+    }
+    
+    .per_data:hover {
+        background-color: #ccc !important;
+        cursor: pointer;
+    }
+    
+    .admin {
+        background-color: #00f;
+        color: #fff;
+        padding: 1px 4px;
+        border-radius: 5px;
+    }
+    
+    .admin {
+        background-color: blue;
+        color: #fff;
+        padding: 1px 4px;
+        border-radius: 5px;
+    }
+    
+    .no-admin {
+        background-color: orange;
+        color: #000;
+        padding: 1px 4px;
+        border-radius: 5px;
+    }
+    
+    .drop-user {
+        background-color: red;
+        color: #fff;
+        padding: 1px 4px;
+        border-radius: 5px;
+    }
+    
+    .user-pays-body {
+        border:1px solid #000;
+        min-height: 200px;
+        max-height: 300px;
+        overflow: auto;
+    }
+    
+    .user-pays-body > div{
+        border-bottom:1px solid #000;
+    }
+</style>
+<div style="margin:10px auto; width: 60%;">
+    <div style="">
+        <div class="lang-title">Пользователи <span style="font-size: 10px;">(сортировка по логину)</span> <span style="font-size: 10px; background-color:#ccffcc; color: #000;">Активирован</span> <span style=" color: #000; font-size: 10px; background-color:#ff9999;">Не активирован</span></div>
+        <div id="users" class="lang-pack">
+            <?php foreach($this->data as $per_data) : ?>
+                    <div 
+                        class="per_data user<?= $per_data->u_id ?>per"
+                        data-activate="<?= $per_data->u_activate ?>"
+                        data-name="<?= $per_data->u_name ?>" 
+                        data-surname="<?= $per_data->u_surname ?>" 
+                        data-login="<?= $per_data->u_login ?>" 
+                        data-email="<?= $per_data->u_email ?>" 
+                        data-password="<?= $per_data->u_password ?>" 
+                        data-reg="<?= $per_data->u_date_reg ?>" 
+                        data-img="<?= $per_data->u_img ?>" 
+                        data-lastlogin="<?= $per_data->u_date_lastlogin ?>"
+                        data-address="<?= $per_data->u_address ?>"
+                        id="<?= $per_data->u_id ?>"
+                        
+                        style="background-color: <?= ( $per_data->u_activate ? '#ccffcc' : '#ff9999' ) ?>"
+                    >
+                        <div class="u_information" style="display:none;"><?= $per_data->u_information ?></div>
+                        <strong>ID:</strong> <?= $per_data->u_id ?> 
+                        <strong>Ф.И.О:</strong> 
+                        <span class="u_surname"><?= $per_data->u_surname ?></span> 
+                        <span class="u_name"><?= $per_data->u_name ?></span> &nbsp;&nbsp;&nbsp;
+                        <strong>Логин:</strong> 
+                        <span class="u_login"><?= $per_data->u_login ?></span> &nbsp;&nbsp;&nbsp;
+                        <strong>Email:</strong> 
+                        <span class="u_email"><?= $per_data->u_email ?></span> &nbsp;&nbsp;&nbsp;
+                        <strong>Дата рег.:</strong> 
+                        (<span class="u_date_reg"><?= date( "d.m.Y" , strtotime($per_data->u_date_reg) ) ?></span>) &nbsp;&nbsp;&nbsp;
+                        <span 
+                            title="<?= (is_numeric($per_data->au_id) ? "Убрать права админа" : "Сделать админом") ?>" 
+                            class="make-admin <?= (is_numeric($per_data->au_id) ? 'admin' : 'no-admin') ?>"
+                            data-admin="<?= (is_numeric($per_data->au_id) ? 0 : 1) ?>"
+                            id="<?= $per_data->u_id ?>"
+                        >
+                            <?= (is_numeric($per_data->au_id) ? "Админ" : "Не админ") ?>
+                        </span>  &nbsp;&nbsp;&nbsp;
+                        <span data-userid="<?= $per_data->u_id ?>" class="drop-user">Удалить</span>
+                    </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <div style="clear: both"></div>
+    <div class="edit-form" style="margin-top: 20px;">
+        <p>Имя: <input type="text" id="u_name" value="" placeholder="Имя..." /></p>
+        <p>Фамилия: <input type="text" id="u_surname" value="" placeholder="Фамилия..." /></p>
+        <p>Логин: <input type="text" id="u_login" value="" placeholder="Логин..." /></p>
+        <p>E-mail: <input type="text" id="u_email" value="" placeholder="E-mail..." /></p>
+        <p>Активация: 
+            <select id="u_activate">
+                <option value="0">Не активен</option>
+                <option value="1">Активен</option>
+            </select>
+        </p>
+        <p>Новый пароль <span style="font-size:8px;">(не указывать, если не нужно менять)</span>: <input type="text" id="new_password" value="" placeholder="Новый пароль..." /></p>
+        <p>
+            О себе: <br/>
+            <textarea id="u_information" cols="100"></textarea>
+        </p>
+        <p>Адрес: <input type="text" id="u_address" value="" placeholder="Адрес..." /></p>
+        
+        <p><input rel="/admin/updateuser/" id="save-path" type="button" value="Обновить" /></p>
+    </div>
+    <div style="clear: both"></div>
+    <div id="user-pays">
+        <div class="lang-title">Переводы пользователя</div>
+        <div class="user-pays-body"></div>
+    </div>
+</div>
+<script type="text/javascript">
+    var _clear_form = function() {        
+        $('input#u_name').val('');
+        $('input#u_surname').val('');
+        $('input#u_login').val('');
+        $('input#u_email').val('');
+        $('input#new_password').val('');
+        $('textarea#u_information').val('');
+        $('input#u_address').val('');
+        $('.user-pays-body').html('');
+    };
+    
+    var _drop_user = function() {
+        var _id = $(this).data('userid');
+        
+        $.post('/admin/deleteuser/', { u_id : _id }, function(data) {
+            if(data == '0') {
+                alert('Пользователь вносил пожертвования - удаление невозможно!');
+            } else {
+                $('.user' + _id + 'per').remove();
+                _clear_form();
+            }
+        })
+    }
+    
+    $('.drop-user').bind("click", _drop_user);
+    
+    $('.make-admin').bind("click", function() {
+        var _this_ = $(this);
+        $.post('/admin/makeadmin/', { au_u_id : _this_.attr('id'), admin : _this_.data('admin') }, function(data) {
+            if(data == '0') {
+                alert('Error make admin');
+            } else {
+                if( _this_.data('admin') == '0' ) {
+                    _this_.html('Не админ');
+                    _this_.addClass('no-admin');
+                    _this_.removeClass('admin');
+                    _this_.data('admin', '1');
+                } else {
+                    _this_.data('admin', '0');
+                    _this_.html('Админ');
+                    _this_.addClass('admin');
+                    _this_.removeClass('no-admin');
+                }
+            }
+            
+            $('.per_data').removeClass('selected');
+            _clear_form();
+        });
+        
+        
+    });
+
+    var _select_path = function() {
+        if( $(this).hasClass('selected') ) {
+            $(this).removeClass('selected');
+            _clear_form();
+        } else {
+            $('.per_data').removeClass('selected');
+            $(this).addClass('selected');
+            $('input#u_name').val( $('.per_data.selected').data('name') );
+            $('input#u_surname').val( $('.per_data.selected').data('surname') );
+            $('input#u_login').val( $('.per_data.selected').data('login') );
+            $('input#u_email').val( $('.per_data.selected').data('email') );
+            $('input#u_address').val( $('.per_data.selected').data('address') );
+            $('#u_activate').val( $('.per_data.selected').data('activate') );
+            $('textarea#u_information').val( $( $('.per_data.selected').find('.u_information').get(0) ).html() );
+            $.post('/admin/getuserpay/', { u_id : $(this).attr('id') }, function(data) {
+                $('.user-pays-body').html(data);
+            });
+        }
+    };
+
+    $('.per_data').bind("click", _select_path);
+
+    $('#save-path').click(function() {
+        if( $('.per_data.selected').length ) {
+            $.post(
+                $(this).attr('rel'),
+                {
+                    u_id : $('.per_data.selected').attr('id'),
+                    u_activate : $('#u_activate').val(),
+                    u_name : $('input#u_name').val(),
+                    u_surname : $('input#u_surname').val(),
+                    u_login : $('input#u_login').val(),
+                    u_email : $('input#u_email').val(),
+                    u_password : $('.per_data.selected').data('password'),
+                    new_password : ( $('#new_password').val().length ? $('#new_password').val() : '' ),
+                    u_img : $('.per_data.selected').data('img'),
+                    u_date_reg : $('.per_data.selected').data('reg'),
+                    u_date_lastlogin : $('.per_data.selected').data('lastlogin'),
+                    u_information : $('textarea#u_information').val(),
+                    u_address : $('input#u_address').val()
+                },
+                function(data) {
+                    if(data !== '0') {
+                        
+                        if( $('#new_password').val().length ) {
+                            $('.per_data.selected').data('password', data);
+                        }
+                        
+                        if( $('#u_activate').val() == '1' ) {
+                            $('.per_data.selected').css('background-color', '#ccffcc');
+                        } else {
+                            $('.per_data.selected').css('background-color', '#ff9999');
+                        }
+                        
+                        $('.per_data.selected').data( 'name', $('input#u_name').val() );
+                        $('.per_data.selected').data( 'surname', $('input#u_surname').val() );
+                        $('.per_data.selected').data( 'activate', $('#u_activate').val() );
+                        $('.per_data.selected').data( 'login', $('input#u_login').val() );
+                        $('.per_data.selected').data( 'email', $('input#u_email').val() );
+                        $('.per_data.selected').data( 'address', $('input#u_address').val() );
+                        $( $('.per_data.selected').find('.u_information').get(0) ).html( $('textarea#u_information').val() );
+                        $( $('.per_data.selected').find('.u_name').get(0) ).html( $('input#u_name').val() );
+                        $( $('.per_data.selected').find('.u_surname').get(0) ).html( $('input#u_surname').val() );
+                        $( $('.per_data.selected').find('.u_login').get(0) ).html( $('input#u_login').val() );
+                        $( $('.per_data.selected').find('.u_email').get(0) ).html( $('input#u_email').val() );
+                        
+                        $('.per_data').removeClass('selected');
+                        _clear_form();
+                        alert('Данные пользователя ОБНОВЛЕНЫ!');
+                    } else {
+                        alert('Ошибка обновления данных пользователя!');
+                    }
+                }
+            )
+        } else {
+            alert('Выберете пользователя!')
+        }
+    });
+</script>

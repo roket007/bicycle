@@ -1,0 +1,167 @@
+<div style="margin:10px auto; width: 60%;">
+    <style>
+        .controller:hover, .action:hover {
+            background-color: #ccc;
+            cursor: pointer;
+        }
+        
+        #action-pack, #controller-pack {
+            height: 200px;
+            overflow: auto;
+        }
+        
+        .selected {
+            background-color: #FF7F0B;
+            color: #fff;
+        }
+    </style>
+    <div class="controllers" style="float: left; width: 45%;">
+        <div style="background: #aaa; text-align: center; font-size: 16px; font-weight: bold; border-bottom: 1px solid #000;">Контроллеры</div>
+        <div id="controller-pack">
+            <?php foreach($this->controllers as $per_controller) : ?>
+                <div class="controller" style="border:1px solid #000; padding: 2px;" id="<?= $per_controller->mdc_id ?>"><?= $per_controller->mdc_controller ?></div>
+            <?php endforeach; ?>
+        </div>
+        <div id="controller_form_edit">
+            <input style="width: 60%;" placeholder="добавить или обновить контроллер" type="text" id="controller-path" value="" />
+            <input style="width: 20%;" type="submit" id="submit-controller" alt="/admin/savenewcontroller/" value="Сохранить" />
+        </div>
+    </div>
+    <div class="actions" style="float: right; width: 45%;">
+        <div style="background: #aaa; text-align: center; font-size: 16px; font-weight: bold; border-bottom: 1px solid #000;">Экшены (страницы)</div>
+        <div id="action-pack"></div>
+        <div id="action_form_edit">
+            <div id="action_form_edit">
+                <input style="width: 30%;" placeholder="названия экшена" type="text" id="action-path" value="" />
+                <input style="width: 30%;" placeholder="название страницы - для наглядности" type="text" id="action-name" value="" />
+                <input style="width: 20%;" type="submit" id="submit-action" alt="/admin/savenewaction/" value="Сохранить" />
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        function clearActionForm() {
+            $('#action-path').val('');
+            $('#action-name').val('');
+            $('#submit-action').val('Сохранить');
+            $('#submit-action').attr('alt', '/admin/savenewaction/');
+        }
+        
+        var _action_click_event = function(ev) {
+            if( $(this).hasClass('selected') ) {
+                $(this).removeClass('selected');
+                clearActionForm();
+            } else {
+                $('.action').removeClass('selected');
+                $(this).addClass('selected');
+                $('#action-path').val( $( $(this).find('.mda_action')[0] ).html() );
+                $('#action-name').val( $( $(this).find('.mda_name')[0] ).html() );
+                $('#submit-action').val('Обновить');
+                $('#submit-action').attr('alt', '/admin/updateaction/');
+            }
+        }
+        
+        var _controller_click_event = function() {
+            if( $(this).hasClass('selected') ) {
+                $(this).removeClass('selected');
+                $('#action-pack').html('');
+                $('#controller-path').val('');
+                $('#submit-controller').val('Сохранить');
+                $('#submit-controller').attr('alt', '/admin/savenewcontroller/');
+            } else {
+                $('.controller').removeClass('selected');
+                $(this).addClass('selected');
+                $('#controller-path').val( $(this).html() );
+                $('#submit-controller').val('Обновить');
+                $('#submit-controller').attr('alt', '/admin/updatecontroller/');
+                $.post('/admin/systemgetactions/', { id : $(this).attr('id') }, function(data) {
+                    $('#action-pack').html(data);
+                    $('.action').bind('click', _action_click_event);
+                });
+            }
+            
+            clearActionForm();
+        }
+        
+        $('.controller').bind('click', _controller_click_event);
+        
+        $('#submit-controller').click(function() {
+            var _path = $('#controller-path').val();
+            var _regexp_path = /^[a-z]+$/gi;
+            
+            if( !_regexp_path.test(_path) ) {
+                alert('Путь контроллера должен содержать только латинские буквы');
+                return;
+            }
+            
+            if( $(this).attr('alt') == '/admin/updatecontroller/' ) {
+                $.post( $(this).attr('alt'), {id : $('.controller.selected').attr('id'), path : _path}, function(data) {
+                    if(data == '0') {
+                        alert('Ошибка обновления контроллера');
+                    } else {
+                        $('.controller.selected').html(_path);
+                    }
+                });
+            } else {
+                $.post( $(this).attr('alt'), {path : _path}, function(data) {
+                    if(data == '0') {
+                        alert('Ошибка сохранения контроллера');
+                    } else {
+                        $('#controller-pack').append('<div class="controller" style="border:1px solid #000; padding: 2px;" id="' + data + '">' + _path + '</div>');
+                        $('.controller').unbind('click');
+                        $('.controller').bind('click', _controller_click_event);
+                    }
+                });
+            }
+        });
+        
+        $('#submit-action').click(function() {
+            var _path_action = $('#action-path').val();
+            var _name_action = $('#action-name').val();
+            var _regexp_path_action = /^[a-z0-9]+$/gi;
+            var _regexp_name_action = /^[a-zа-я0-9][a-zа-я0-9\-\_\.\,\?\!\s]+$/gi;
+            
+            if( !$('.controller.selected').length ) {
+                alert('Выберите контроллер');
+                return;
+            }
+            
+            if( !_regexp_path_action.test(_path_action) ) {
+                alert('Путь экшена должен содержать только латинские буквы');
+                return;
+            }
+            
+            if( !_regexp_name_action.test(_name_action) ) {
+                alert('Ну все таки я советую заполнить поле "название страницы" - потом легче будет находить!');
+                return;
+            }
+            
+            if( $(this).attr('alt') == '/admin/updateaction/' ) {
+                $.post( $(this).attr('alt'), {id : $('.action.selected').attr('id'), path : _path_action, name : _name_action}, function(data) {
+                    if(data == '0') {
+                        alert('Ошибка обновления экшена');
+                    } else {
+                        $( $('.action.selected').find('.mda_action')[0] ).html(_path_action);
+                        $( $('.action.selected').find('.mda_name')[0] ).html(_name_action);
+                    }
+                });
+            } else {
+                $.post( $(this).attr('alt'), { id: $('.controller.selected').attr('id'), path : _path_action, name : _name_action}, function(data) {
+                    if(data == '0') {
+                        alert('Ошибка сохранения экшена');
+                    } else {
+                        var _html = [];
+                        _html.push('<div class="action selected" style="border:1px solid #000; padding: 2px;" id="' + data  + '">');
+                        _html.push('<span class="mda_action">' + _path_action + '</span> -');
+                        _html.push('<span class="mda_name">' + _name_action + '</span>');
+                        _html.push('</div>');
+                        $('#action-pack').append( _html.join("\n") );
+                        $('.action').unbind('click');
+                        $('.action').bind('click', _action_click_event);
+                    }
+                });
+            }
+            
+            clearActionForm();
+        });
+    </script>
+</div>

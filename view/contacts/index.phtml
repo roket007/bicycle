@@ -1,0 +1,32 @@
+<div class="grid-container"> 
+	<div class="grid-100 mobile-grid-100 tablet-grid-100"> 
+		<div id="main_content">
+			<?= $this->text; ?>
+                <style>
+                    div.error-contacts p {
+                        color: #ff3333;
+                    }
+                </style>
+                <div class="error-contacts">
+                    <?php if( isset($this->errors) ) : ?>
+                        <p><?= (!$this->errors['name'] ? '' : C::getLanguageString('contact_error_name')) ?></p>
+                        <p><?= (!$this->errors['email'] ? '' : C::getLanguageString('contact_error_email')) ?></p>
+                        <p><?= (!$this->errors['subject'] ? '' : C::getLanguageString('contact_error_subject')) ?></p>
+                        <p><?= (!$this->errors['subject'] ? '' : C::getLanguageString('contact_error_text')) ?></p>
+                    <?php endif; ?>
+                </div>
+                <?php if($this->enable['contacts']['enable']) : ?>
+                    <form id="feedback" action="<?= (C::$lang == 'ru' ? '/ru' : '') ?>/contacts/" method="post">
+                        <p><input type="text" onfocus="if (this.value=='<?= C::getLanguageString('contact_name') ?>') this.value='';" onblur="if (this.value=='') this.value='<?= C::getLanguageString('contact_name') ?>';" value="<?= ( !empty($this->data['name']) ? $this->data['name'] : C::getLanguageString('contact_name') ) ?>" size="40" maxlength="50" name="name"></p>
+                        <p><input type="text" onfocus="if (this.value=='<?= C::getLanguageString('contact_email') ?>') this.value='';" onblur="if (this.value=='') this.value='<?= C::getLanguageString('contact_email') ?>';" value="<?= ( !empty($this->data['email']) ? $this->data['email'] : C::getLanguageString('contact_email') ) ?>" size="40" maxlength="50" name="email"></p>
+                        <p><input type="text" onfocus="if (this.value=='<?= C::getLanguageString('contact_subject') ?>') this.value='';" onblur="if (this.value=='') this.value='<?= C::getLanguageString('contact_subject') ?>';" value="<?= ( !empty($this->data['subject']) ? $this->data['subject'] : C::getLanguageString('contact_subject') ) ?>" size="40" maxlength="50" name="subject"></p>
+                        <p><textarea rows="10" cols="45" onfocus="if (this.value=='<?= C::getLanguageString('contact_text') ?>') this.value='';" onblur="if (this.value=='') this.value='<?= C::getLanguageString('contact_text') ?>';" name="text"><?= ( !empty($this->data['text']) ? $this->data['text'] : C::getLanguageString('contact_text') ) ?></textarea></p>
+                        <input type="hidden" name="antispam" value="<?= $this->antispam ?>" />
+                        <p><input type="submit" value="<?= C::getLanguageString('contact_submit') ?>"></p>
+                    </form>
+                <?php else : ?>
+                    <p><?= C::getLanguageString('contacts_enable_error') ?></p>
+                <?php endif; ?>
+		</div>
+	</div>
+</div>

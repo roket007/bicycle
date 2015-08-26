@@ -1,0 +1,8 @@
+<?php if( !empty($this->actions) ) : ?>
+    <?php foreach($this->actions as $per_action) : ?>
+        <div class="action" style="border:1px solid #000; padding: 2px;" id="<?= $per_action->mda_id ?>">
+            <span class="mda_action"><?= $per_action->mda_action ?></span> - 
+            <span class="mda_name"><?= $per_action->mda_name ?></span>
+        </div>
+    <?php endforeach; ?>
+<?php endif; ?>

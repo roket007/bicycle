@@ -1,0 +1,35 @@
+<p style="text-align: center; font-size: 26px; line-height: 70px; margin:0px;"><?= C::getLanguageString('projects_support_title_form') ?>: </p>
+    <form style="display:inline;" align="center" id="sendsupport" action="https://www.liqpay.com/?do=clickNbuy" method="POST" >
+        <input type="hidden" name="operation_xml" value="<?= $this->operation_xml ?>" />
+        <input type="hidden" name="signature" value="<?= $this->signature ?>" />
+        <a 
+            style="float: none; position: relative;top: -5px;" 
+            class="pay_button" 
+            onclick="document.forms.sendsupport.submit()"
+            href="javascript:void(0);"
+        ><?= C::getLanguageString('projects_show_support_to') ?> <?= $this->sum ?> грн.</a>
+        <a 
+            style="float: none; position: relative;top: -5px;" 
+            class="pay_button" 
+            onclick="print_blank()"
+            href="javascript:void(0);"
+        ><?= C::getLanguageString('projects_print_blank') ?> на <?= $this->sum ?> грн.</a>
+        <script type="text/javascript">
+            function print_blank() {
+                var newWin = window.open(
+                    "<?= C::site_host ?>/projects/printblank/<?= $this->id . '/' . $this->user_id . '/' . base64_encode($this->sum) . '/'; ?>",
+                    "JSSite",
+                    "width=600,height=800,resizable=yes,scrollbars=yes,status=yes"
+                );
+
+                newWin.focus();
+            }
+        </script>
+    </form>
+<div style="text-align: center; background: #fff; margin:15px; padding: 10px; border-radius: 10px;">
+    <img src="/img/maestro_logo_sm.gif" />
+    <img src="/img/mastercard_logo_sm.gif" />
+    <img src="/img/mcsc_logo.gif" />
+    <img src="/img/vbv_logo.gif" />
+    <img src="/img/visa-logo.gif" />
+</div>

@@ -1,0 +1,581 @@
+<script src="/js/jquery-1.6.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="/js/jquery-ui-1.8.13.custom.min.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" href="/css/smoothness/jquery-ui-1.8.13.custom.css" type="text/css" media="screen" charset="utf-8">
+<link rel="stylesheet" href="/css/elrte.min.css" type="text/css" media="screen" charset="utf-8">
+<script src="/js/tinymce.min.js"></script>
+<style>
+    .lang-title {
+        text-align: center;
+        font-size: 16px;
+        font-weight: bold;
+        background: #FF7F0B;
+        color: #fff;
+    }
+    
+    .drop-pay {
+        background: #fff;
+        padding: 4px;
+        border-radius: 15px;
+        cursor: pointer;
+    }
+    
+    .drop-pay:hover {
+        background: #ddd;
+    }
+    
+    .lang-pack-plala {
+        max-height: 300px;
+        overflow: auto;
+        font-size: 14px;
+    }
+    
+    .selected {
+        background-color: #66cc00 !important;
+        color: #000;
+    }
+    
+    .per_data {
+        border-bottom:1px solid #000;
+        padding: 2px;
+    }
+    
+    .per_pays {
+        border-bottom:1px solid #000;
+        padding: 2px;
+    }
+    
+    .per_data:hover {
+        background-color: #ccc !important;
+        cursor: pointer;
+    }
+    
+    .admin {
+        background-color: #00f;
+        color: #fff;
+        padding: 1px 4px;
+        border-radius: 5px;
+    }
+    
+    .admin {
+        background-color: blue;
+        color: #fff;
+        padding: 1px 4px;
+        border-radius: 5px;
+    }
+    
+    .no-admin {
+        background-color: orange;
+        color: #000;
+        padding: 1px 4px;
+        border-radius: 5px;
+    }
+    
+    .drop-user {
+        background-color: red;
+        color: #fff;
+        padding: 1px 4px;
+        border-radius: 5px;
+    }
+    
+    .top-form {
+        margin: 0px auto; width: 60%;
+    }
+    
+    #user-pays {
+        max-height: 200px;
+        overflow: auto;
+        border: 1px solid;
+    }
+    
+    #project-form {
+        width: 45%;
+        float: left;
+    }
+    
+    .right-form {
+        width: 45%;
+        float: right;
+    }
+</style>
+<div class="lang-title" style="margin: 0px auto; width: 60%;">Проекты <span style="font-size: 10px;">(сортировка по дате создания)</span></div>
+<div class="lang-pack-plala">
+    <table width="60%" align="center">
+        <tbody id="projects-pack" class="lang-pack">
+            <?php if( !empty($this->data) ) : ?>
+                <?php foreach($this->data as $key => $per_data) : ?>
+                    <tr 
+                        class="per_data"
+                        id="<?= $per_data->p_id ?>"
+                        style="background-color: <?= ( $per_data->p_state ? '#ccffcc' : '#ff9999' ) ?>"
+                    >
+                        <td>
+                            <?= $per_data->p_id ?>
+                        </td>
+                        <td class="ru_title">(ru)
+                            <?php if( !empty($per_data->ru_title) ) : ?>
+                                <a class="ru_alias" target="_blank" href="/ru/projects/<?= $per_data->p_id ?>-<?= $per_data->ru_alias ?>/"><?= $per_data->ru_title ?></a>
+                            <?php endif; ?>
+                        </td>
+                        <td class="ua_title">(ua)
+                            <?php if( !empty($per_data->ru_title) ) : ?>
+                                <a class="ua_alias" target="_blank" href="/projects/<?= $per_data->p_id ?>-<?= $per_data->ua_alias ?>/"><?= $per_data->ua_title ?></a>
+                            <?php endif; ?>
+                        </td>
+                        <td class="p_date_create"><b>Дата создания</b>: <?= date( "d.m.Y H:i:s", strtotime($per_data->p_date_create) ) ?></td>
+                        <td class="p_vote"><b>Голосов</b>: <?= $per_data->p_count_vote ?></td>
+                        <td class="p_current"><b>Собрано</b>: <?= $per_data->p_current ?></td>
+                        <td><b>Нужно</b>: <span class="p_need"><?= $per_data->p_need ?></span></td>
+                        <td>
+                            <div class="ru_pl_title" style="display:none;"><?= $per_data->ru_title ?></div>
+                            <div class="ru_pl_alias" style="display:none;"><?= $per_data->ru_alias ?></div>
+                            <div class="ru_pl_description" style="display:none;"><?= $per_data->ru_description ?></div>
+                            <div class="ru_pl_keywords" style="display:none;"><?= $per_data->ru_keywords ?></div>
+                            <?php list($ru_pretext, $ru_endtext) = explode("{read_more}", $per_data->ru_text); ?>
+                            <div class="ru_pretext" style="display:none;"><?= $ru_pretext ?></div>
+                            <div class="ru_endtext" style="display:none;"><?= $ru_endtext ?></div>
+                            
+                            <div class="ua_pl_title" style="display:none;"><?= $per_data->ua_title ?></div>
+                            <div class="ua_pl_alias" style="display:none;"><?= $per_data->ua_alias ?></div>
+                            <div class="ua_pl_description" style="display:none;"><?= $per_data->ua_description ?></div>
+                            <div class="ua_pl_keywords" style="display:none;"><?= $per_data->ua_keywords ?></div>
+                            <?php list($ua_pretext, $ua_endtext) = explode("{read_more}", $per_data->ua_text); ?>
+                            <div class="ua_pretext" style="display:none;"><?= $ua_pretext ?></div>
+                            <div class="ua_endtext" style="display:none;"><?= $ua_endtext ?></div>
+                            <div class="p_state" style="display:none;"><?= $per_data->p_state ?></div>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </tbody>
+    </table>
+</div>
+<div style="clear: both"></div>
+<div class="top-form">
+    <div id="project-form">
+        <p>Нужно собрать: <input type="text" id="p_need" value="" /></p>
+        <p>Публикация: 
+            <select id="p_state">
+                <option value="1">Опубликовано</option>
+                <option value="0">Не опубликовано</option>
+            </select>
+        </p>
+        <div id="tabs">
+            <ul>
+                <li><a href="#tabs-1">RU</a></li>
+                <li><a href="#tabs-2">UA</a></li>
+            </ul>
+            <div id="tabs-1">
+                <h2 align="center">Русская локлизация</h2>
+                <p>Название: <input id="ru_pl_title" type="text" value="" /></p>
+                <p>URL: <input id="ru_pl_alias" disabled="disabled" type="text" value="" /></p>
+                <p>Description: <input id="ru_pl_description" type="text" value="" /></p>
+                <p>Keywords: <input id="ru_pl_keywords" type="text" value="" /></p>
+                <p>Вступительное описание (то, что не скрыто):</p>
+                <div id="ru_pl_text_pre"></div>
+                <p>Описание (скрыто, отображается после "читать далее..."):</p>
+                <div id="ru_pl_text_end"></div>
+            </div>
+            <div id="tabs-2">
+                <h2 align="center">Украинская локлизация</h2>
+                <p>Название: <input id="ua_pl_title" type="text" value="" /></p>
+                <p>URL: <input id="ua_pl_alias" disabled="disabled" type="text" value="" /></p>
+                <p>Description: <input id="ua_pl_description" type="text" value="" /></p>
+                <p>Keywords: <input id="ua_pl_keywords" type="text" value="" /></p>
+                <p>Вступительное описание (то, что не скрыто):</p>
+                <div id="ua_pl_text_pre"></div>
+                <p>Описание (скрыто, отображается после "читать далее..."):</p>
+                <div id="ua_pl_text_end"></div>
+            </div>
+        </div>
+        <p><input rel="/admin/saveproject/" type="button" id="save-form" value="Сохранить" /></p>
+    </div>
+    <div class="right-form">
+        <div>
+            <iframe frameborder="0" id="photo-frame" width="100%" src="/admin/projectphotos/" height="250px"></iframe>
+        </div>
+        <div style="clear: both"></div>
+        <div id="pays" style="display:none;">
+            <div class="lang-title">Переводы пользователей</div>
+            <div id="user-pays">
+                <table width="100%" align="center" style="font-size: 13px; background-color: #eee;">
+                    <tbody class="user-pays-body"></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="add-custom-pay" style="display:none;">
+            Пользьзователь: 
+            <select id="user-add_pay">
+                <?php foreach($this->users as $per_user) : ?>
+                <option class="users-custom" value="<?= $per_user->u_id ?>" data-login="<?= $per_user->u_login ?>" data-name="<?= $per_user->u_surname ?> <?= $per_user->u_name ?>">
+                    ID: <?= $per_user->u_id ?>, <?= $per_user->u_login ?> (<?= $per_user->u_surname ?> <?= $per_user->u_name ?>)
+                </option>
+                <?php endforeach; ?>
+            </select><br/>
+            Сумма: 
+            <input type="text" id="sum-to-add-custom" value="" /><br/>
+            <input type="button" class="add-custom" value="Добавить платеж" />
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function urlLit(w, v) {
+        var tr = 'a b v g d e ["zh","j"] z i y k l m n o p r s t u f h c ch sh ["shh","shch"] ~ y ~ e yu ya ~ ["jo","e"]'.split(' ');
+        var ww = ''; 
+        var w = w.toLowerCase().replace(/і/g, 'i').replace(/є/g, 'e').replace(/ї/g, 'yi');
+        
+        for(var i = 0; i < w.length; ++i) {
+            var cc = w.charCodeAt(i); 
+            var ch = ( cc >= 1072 ? tr[cc - 1072] : w[i] );
+            
+            if( ch.length < 3 ) {
+                ww+=ch;
+            } else {
+                ww+=eval(ch)[v];
+            }
+        }
+        
+        return( ww.replace(/[^a-zA-Z0-9\-]/g,'-').replace(/[-]{2,}/gim, '-').replace( /^\-+/g, '').replace( /\-+$/g, '') );
+    }
+
+    $(document).ready(function() {
+        $( "#tabs" ).tabs();
+        
+        var e_h = 300;
+        
+        tinymce.init({
+            selector:'#ru_pl_text_pre',
+            language : 'ru',
+            height: e_h,
+            plugins: [
+                "advlist autolink lists link image charmap print preview anchor",
+                "searchreplace visualblocks code fullscreen",
+                "insertdatetime media table contextmenu paste"
+            ],
+            toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
+        });
+        tinymce.init({
+            selector:'#ua_pl_text_pre',
+            language : 'ru',
+            height: e_h,
+            plugins: [
+                "advlist autolink lists link image charmap print preview anchor",
+                "searchreplace visualblocks code fullscreen",
+                "insertdatetime media table contextmenu paste"
+            ],
+            toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
+        });
+        tinymce.init({
+            selector:'#ru_pl_text_end',
+            language : 'ru',
+            height: e_h,
+            plugins: [
+                "advlist autolink lists link image charmap print preview anchor",
+                "searchreplace visualblocks code fullscreen",
+                "insertdatetime media table contextmenu paste"
+            ],
+            toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
+        });
+        tinymce.init({
+            selector:'#ua_pl_text_end',
+            language : 'ru',
+            height: e_h,
+            plugins: [
+                "advlist autolink lists link image charmap print preview anchor",
+                "searchreplace visualblocks code fullscreen",
+                "insertdatetime media table contextmenu paste"
+            ],
+            toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
+        });
+        
+        $('#ru_pl_title').bind("keyup", function() {
+            $('#ru_pl_alias').val( urlLit( $(this).val(), 0 ) );
+        });
+        
+        $('#ua_pl_title').bind("keyup", function() {
+            $('#ua_pl_alias').val( urlLit( $(this).val(), 0 ) );
+        });
+        
+        var drop_pay = function() {
+            if( confirm('Вы действительно хотите удалить платеж?') ) {
+                var _id = $(this).attr('id');
+                
+                $.post('/admin/projectsdropcustompay/', {id : _id}, function(data) {
+                    if(data == '0') {
+                        alert('Ошибка! Не удалось удалить платеж!');
+                    } else {
+                        $( '#pays' + _id ).remove();
+                    }
+                });
+            }
+        }
+        
+        
+        
+        $('.add-custom').bind("click", function() {
+            var reg = /^[0-9]+([\.][\d]{1,2})?$/ig;
+            
+            if( reg.test( $('#sum-to-add-custom').val() ) ) {
+                $.post(
+                    '/admin/projectsaddcustompay/', 
+                    {
+                        pp_p_id: $('.per_data.selected').attr('id'),
+                        pp_u_id: $('#user-add_pay').val(),
+                        pp_sum: $('#sum-to-add-custom').val()
+                    },
+                    function(data) {
+                        if(data == '0') {
+                            alert('Ошибка добавления платежа!')
+                        } else {
+                            var _date = function() {
+                                var d = new Date();
+                                function pad(n){return n<10 ? '0'+n : n}
+                                var now_date = d.getUTCDate() + '.' + pad(d.getUTCMonth()+1) + '.' + d.getUTCFullYear();
+                                return now_date;
+                            };
+                            
+                            $('.user-pays-body').append('\
+                                <tr calss="per_pays pays' + data + '" id="pays' + data + '" style="padding: 2px;">\
+                                    <td><b>Сумма:</b> <span class="pp_sum">' + Math.ceil($('#sum-to-add-custom').val()) + '</span></td>\
+                                    <td><span class="pp_data">' + _date() + '</span></td>\
+                                    <td><b>Логин </b> <span class="pp_sum">' + $('#user-add_pay option:selected').data('login') + '</span></td>\
+                                    <td><b>Ф.И.О </b> <span class="pp_sum">' + $('#user-add_pay option:selected').data('name') + '</span></td>\
+                                    <td class="drop-pay" id="' + data + '">Удалить</td>\
+                                </tr>\
+                            ');
+                            $('#pays').show();
+                            $('#sum-to-add-custom').val('');
+                            $('.drop-pay').unbind("click");
+                            $('.drop-pay').bind("click", drop_pay);
+                            alert('Платеж успешно добавлен!');
+                        }
+                    }
+                );
+            } else {
+                alert('Неправильный формат суммы, нужно (1) или (1.1) или (1.11)');
+            }
+        });
+        
+        var _clear_form = function() {
+            $( $('iframe#photo-frame').contents().find('body').get(0) ).remove();
+            tinymce.get('ru_pl_text_pre').setContent('');
+            tinymce.get('ua_pl_text_pre').setContent('');
+            tinymce.get('ru_pl_text_end').setContent('');
+            tinymce.get('ua_pl_text_end').setContent('');
+            $('#ua_pl_title').val('');
+            $('#ua_pl_keywords').val('');
+            $('#ua_pl_description').val('');
+            $('#ua_pl_alias').val('');
+            $('#ru_pl_title').val('');
+            $('#ru_pl_keywords').val('');
+            $('#ru_pl_description').val('');
+            $('#ru_pl_alias').val('');
+            $('#p_need').val('');
+            $('#save-form').attr('rel', '/admin/saveproject/');
+            $('#save-form').val('Сохранить');
+        };
+
+        var _select_path = function() {
+            if( $(this).hasClass('selected') ) {
+                $(this).removeClass('selected');
+                $('#pays').hide();
+                $('.add-custom-pay').hide();
+                _clear_form();
+            } else {
+                $('.add-custom-pay').show();
+                $('.per_data').removeClass('selected');
+                $(this).addClass('selected');
+                $('#save-form').attr('rel', '/admin/updateproject/');
+                $('#save-form').val('Обновить');
+                tinymce.get('ru_pl_text_pre').setContent( $( $(this).find('.ru_pretext').get(0) ).html() );
+                tinymce.get('ua_pl_text_pre').setContent( $( $(this).find('.ua_pretext').get(0) ).html() );
+                tinymce.get('ru_pl_text_end').setContent( $( $(this).find('.ru_endtext').get(0) ).html() );
+                tinymce.get('ua_pl_text_end').setContent( $( $(this).find('.ua_endtext').get(0) ).html() );
+                $('#ua_pl_title').val( $( $(this).find('.ua_pl_title').get(0) ).html() );
+                $('#ua_pl_keywords').val( $( $(this).find('.ua_pl_keywords').get(0) ).html() );
+                $('#ua_pl_description').val( $( $(this).find('.ua_pl_description').get(0) ).html() );
+                $('#ua_pl_alias').val( $( $(this).find('.ua_pl_alias').get(0) ).html() );
+                $('#ru_pl_title').val( $( $(this).find('.ru_pl_title').get(0) ).html() );
+                $('#ru_pl_keywords').val( $( $(this).find('.ru_pl_keywords').get(0) ).html() );
+                $('#ru_pl_description').val( $( $(this).find('.ru_pl_description').get(0) ).html() );
+                $('#ru_pl_alias').val( $( $(this).find('.ru_pl_alias').get(0) ).html() );
+                $('#p_need').val( $( $(this).find('.p_need').get(0) ).html() );
+                $('#p_state').val( $( $(this).find('.p_state').get(0) ).html() );
+                
+                $('iframe#photo-frame').attr('src', '/admin/projectphotos/' + $(this).attr('id') + '/');
+                $.post('/admin/getprojectpays/', { p_id : $(this).attr('id') }, function(data) {
+                    if(data.replace(/[\s]+/g, '').length) {
+                        $('#pays').show();
+                        $('.user-pays-body').html(data);
+                        $('.drop-pay').bind("click", drop_pay);
+                    } else {
+                        $('#pays').hide();
+                    }
+                });
+            }
+        };
+
+        $('.per_data').bind("click", _select_path);
+
+        $('#save-form').click(function() {
+            if( !$('#ua_pl_title').val().length || !$('#ru_pl_title').val().length ) {
+                alert('Вы не заполнили русское или украинское название проекта!');
+                return;
+            }
+            
+            if( !$('#p_need').val().length ) {
+                alert('Вы не указали сумму которую нужно собрать!');
+                return;
+            }
+            
+            if( !$('#ua_pl_description').val().length || !$('#ru_pl_description').val().length ) {
+                alert('Вы не заполнили русское или украинское поле Description!');
+                return;
+            }
+            
+            if( !$('#ua_pl_keywords').val().length || !$('#ru_pl_keywords').val().length ) {
+                alert('Вы не заполнили русское или украинское поле Description!');
+                return;
+            }
+            
+            if( !tinymce.get('ua_pl_text_pre').getContent().length || !tinymce.get('ru_pl_text_pre').getContent().length ) {
+                alert('Вы не заполнили русское или украинское поле "Вступительное описание"!');
+                return;
+            }
+            
+            if( !tinymce.get('ua_pl_text_end').getContent().length || !tinymce.get('ru_pl_text_end').getContent().length ) {
+                alert('Вы не заполнили русское или украинское поле "Описание"!');
+                return;
+            }
+            
+            if( $(this).attr('rel') == '/admin/saveproject/' ) {
+                $.post(
+                    $(this).attr('rel'),
+                    {
+                        p_need : $('#p_need').val(),
+                        p_state : $('#p_state').val(),
+                        
+                        ru_pl_description : $('#ru_pl_description').val(),
+                        ru_pl_keywords : $('#ru_pl_keywords').val(),
+                        ru_pl_title : $('#ru_pl_title').val(),
+                        ru_pl_alias : $('#ru_pl_alias').val(),
+                        ru_pl_text_pre : tinymce.get('ru_pl_text_pre').getContent(),
+                        ru_pl_text_end : tinymce.get('ru_pl_text_end').getContent(),
+                        
+                        ua_pl_description : $('#ua_pl_description').val(),
+                        ua_pl_keywords : $('#ua_pl_keywords').val(),
+                        ua_pl_title : $('#ua_pl_title').val(),
+                        ua_pl_alias : $('#ua_pl_alias').val(),
+                        ua_pl_text_pre : tinymce.get('ua_pl_text_pre').getContent(),
+                        ua_pl_text_end : tinymce.get('ua_pl_text_end').getContent()
+                    },
+                    function(data) {
+                        $('#projects-pack').append('\
+                                <tr \
+                                    class="per_data"\
+                                    id="' + data + '"\
+                                    style="background-color:' + ( $('#p_state').val() == '1' ? '#ccffcc' : '#ff9999' ) + '"\
+                                >\
+                                    <td>\
+                                            ' + data + '\
+                                    </td>\
+                                    <td class="ru_title">(ru)\
+                                            <a class="ru_alias" target="_blank" href="/ru/projects/' + data + '-' + $('#ru_pl_alias').val() + '/">' + $('#ru_pl_title').val() + '</a>\
+                                    </td>\
+                                    <td class="ua_title">(ua)\
+                                            <a class="ua_alias" target="_blank" href="/projects/' + data + '-' + $('#ua_pl_alias').val() + '/">' + $('#ua_pl_title').val() + '</a>\
+                                    </td>\
+                                    <td class="p_date_create"><b>Дата создания</b>: Сегодня</td>\
+                                    <td class="p_vote"><b>Голосов</b>: 0</td>\
+                                    <td class="p_current"><b>Собрано</b>: 0</td>\
+                                    <td><b>Нужно</b>: <span class="p_need">' + $('#p_need').val() + '</span></td>\
+                                    <td>\
+                                        <div class="ru_pl_title" style="display:none;">' + $('#ru_pl_title').val() + '</div>\
+                                        <div class="ru_pl_alias" style="display:none;">' + $('#ru_pl_alias').val() + '</div>\
+                                        <div class="ru_pl_description" style="display:none;">' + $('#ru_pl_description').val() + '</div>\
+                                        <div class="ru_pl_keywords" style="display:none;">' + $('#ru_pl_keywords').val() + '</div>\
+                                        <div class="ru_pretext" style="display:none;">' + tinymce.get('ru_pl_text_pre').getContent() + '</div>\
+                                        <div class="ru_endtext" style="display:none;">' + tinymce.get('ru_pl_text_end').getContent() + '</div>\
+                                        <div class="ua_pl_title" style="display:none;">' + $('#ua_pl_title').val() + '</div>\
+                                        <div class="ua_pl_alias" style="display:none;">' + $('#ua_pl_alias').val() + '</div>\
+                                        <div class="ua_pl_description" style="display:none;">' + $('#ua_pl_description').val() + '</div>\
+                                        <div class="ua_pl_keywords" style="display:none;">' + $('#ua_pl_keywords').val() + '</div>\
+                                        <div class="ua_pretext" style="display:none;">' + tinymce.get('ua_pl_text_pre').getContent() + '</div>\
+                                        <div class="ua_endtext" style="display:none;">' + tinymce.get('ua_pl_text_end').getContent() + '</div>\
+                                        <div class="p_state" style="display:none;">' + $('#p_state').val() + '</div>\
+                                    </td>\
+                                </tr>\
+                        ');
+                        
+                        $('.per_data').unbind("click");
+                        $('.per_data').bind("click", _select_path);
+                        _clear_form();
+                        alert('Успешно сохранено!');
+                    }
+                )
+            } else {
+                $.post(
+                    $(this).attr('rel'),
+                    {
+                        p_id : $('.per_data.selected').attr('id'),
+                        p_need : $('#p_need').val(),
+                        p_state : $('#p_state').val(),
+                        
+                        ru_pl_description : $('#ru_pl_description').val(),
+                        ru_pl_keywords : $('#ru_pl_keywords').val(),
+                        ru_pl_title : $('#ru_pl_title').val(),
+                        ru_pl_alias : $('#ru_pl_alias').val(),
+                        ru_pl_text_pre : tinymce.get('ru_pl_text_pre').getContent(),
+                        ru_pl_text_end : tinymce.get('ru_pl_text_end').getContent(),
+                        
+                        ua_pl_description : $('#ua_pl_description').val(),
+                        ua_pl_keywords : $('#ua_pl_keywords').val(),
+                        ua_pl_title : $('#ua_pl_title').val(),
+                        ua_pl_alias : $('#ua_pl_alias').val(),
+                        ua_pl_text_pre : tinymce.get('ua_pl_text_pre').getContent(),
+                        ua_pl_text_end : tinymce.get('ua_pl_text_end').getContent()
+                    },
+                    function(data) {
+                        if(data == '0') {
+                            alert('Ошибка обновления проекта!');
+                        } else {
+                            $( $('.per_data.selected').find('.ru_pretext').get(0) ).html( tinymce.get('ru_pl_text_pre').getContent() );
+                            $( $('.per_data.selected').find('.ua_pretext').get(0) ).html( tinymce.get('ua_pl_text_pre').getContent() );
+                            $( $('.per_data.selected').find('.ru_endtext').get(0) ).html( tinymce.get('ru_pl_text_end').getContent() );
+                            $( $('.per_data.selected').find('.ua_endtext').get(0) ).html( tinymce.get('ua_pl_text_end').getContent() );
+                            $( $('.per_data.selected').find('.ua_pl_title').get(0) ).html( $('#ua_pl_title').val() );
+                            $( $('.per_data.selected').find('.ua_pl_keywords').get(0) ).html( $('#ua_pl_keywords').val() );
+                            $( $('.per_data.selected').find('.ua_pl_description').get(0) ).html( $('#ua_pl_description').val() );
+                            $( $('.per_data.selected').find('.ua_pl_alias').get(0) ).html( $('#ua_pl_alias').val() );
+                            $( $('.per_data.selected').find('.ru_pl_title').get(0) ).html( $('#ru_pl_title').val() );
+                            $( $('.per_data.selected').find('.ru_pl_keywords').get(0) ).html( $('#ru_pl_keywords').val() );
+                            $( $('.per_data.selected').find('.ru_pl_description').get(0) ).html( $('#ru_pl_description').val() );
+                            $( $('.per_data.selected').find('.ru_pl_alias').get(0) ).html( $('#ru_pl_alias').val() );
+                            $( $('.per_data.selected').find('.p_need').get(0) ).html( $('#p_need').val() );
+                            $( $('.per_data.selected').find('.p_state').get(0) ).html( $('#p_state').val() );
+                            $( $('.per_data.selected').find('.ru_alias').get(0) ).attr(
+                                'href', 
+                                '/ru/projects/' + $('.per_data.selected').attr('id') + '-' + $('#ru_pl_alias').val() + '/'
+                            );
+                            $( $('.per_data.selected').find('.ru_alias').get(0) ).html( $('#ru_pl_title').val() );
+                            $( $('.per_data.selected').find('.ua_alias').get(0) ).attr(
+                                'href', 
+                                '/projects/' + $('.per_data.selected').attr('id') + '-' + $('#ua_pl_alias').val() + '/'
+                            );
+                            $( $('.per_data.selected').find('.ua_alias').get(0) ).html( $('#ua_pl_title').val() );
+                            
+                            if( $('#p_state').val() == '0' ) {
+                                $('.per_data.selected').css('background-color', '#ff9999')
+                            } else {
+                                $('.per_data.selected').css('background-color', '#ccffcc');
+                            }
+                            
+                            $('.per_data').removeClass('selected');
+                            _clear_form();
+                            alert('Успешно обновлено!');
+                        }
+                    }
+                )
+            }
+        });
+    });
+</script>

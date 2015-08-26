@@ -1,0 +1,118 @@
+<?php 
+    $all_images = explode(",", $this->data['images']);
+    $img = array_shift($all_images);
+?>
+<div class="grid-container"> 
+	<div class="grid-100 mobile-grid-100 tablet-grid-100"> 
+		<div id="main_content" class="clearfix">
+			<div id="project_details">
+				<h1><?= $this->data['pl_title'] ?></h1>
+				<div class="clearfix">	
+                                    <div id="gallery">
+                                        <a href="/images/<?= $img ?>"><img class="project_image" alt="<?= $this->data['pl_title'] ?>" width="320" height="240" src="/images/cropr_320x240/<?= $img ?>" /></a>
+                                        <?php if( !empty($all_images) ) : ?>
+                                            <?php foreach($all_images as $per_image) : ?>
+                                                <a style="display:none;" href="/images/<?= $per_image ?>"><img alt="<?= $this->data['pl_title'] ?>" width="320" height="240" src="/images/cropr_320x240/<?= $per_image ?>" /></a>
+                                            <?php endforeach; ?>
+                                            <script type="text/javascript">
+                                                $(document).ready(function() {
+                                                    $('#gallery a').lightBox();
+                                                });
+                                            </script>
+                                        <?php endif; ?>
+                                    </div>
+                                    <?php 
+                                        $pre_text = $main_text = '';
+                                        
+                                        if( strpos($this->data['pl_text'], '{read_more}') > 0 ) {
+                                            list($pre_text, $main_text) = explode("{read_more}", $this->data['pl_text']);
+                                        } else {
+                                            $pre_text = $this->data['pl_text'];
+                                        }
+                                    ?>
+                                    <?= $pre_text ?>
+                                    <?php if( !empty($main_text) ) : ?>
+                                        <div class="maintext close" style="display:none;"><?= $main_text ?></div>
+                                        <div style="height: 40px; padding: 10px;">
+                                            <a class="details" href="javascript:void(0);"><?= C::getLanguageString('project_deteils') ?></a>
+                                            <script type="text/javascript">
+                                                $(document).ready(function() {
+                                                    $('.details').click(function(){
+                                                        $('.maintext').toggle(1, function() {
+                                                            if( $('.maintext').hasClass('close') ) {
+                                                                $('.maintext').removeClass('close');
+                                                                $('.maintext').addClass('open');
+                                                                $('.details').html('<?= C::getLanguageString('project_close_deteils') ?>');
+                                                            } else {
+                                                                $('.maintext').removeClass('open');
+                                                                $('.maintext').addClass('close');
+                                                                $('.details').html('<?= C::getLanguageString('project_deteils') ?>');
+                                                            }
+                                                        });
+                                                    });
+                                                });
+                                            </script>
+                                        </div>
+                                    <?php endif; ?>
+				</div>
+				<div id="progress_form" class="grid-100 mobile-grid-100 tablet-grid-100 clearfix">	
+					<div class="grid-70 mobile-grid-100 tablet-grid-70"> 
+						<span class="budget"><?= C::getLanguageString('projects_show_need') ?> <?= $this->data['p_need'] ?> грн.</span>
+                                                <span class="needed"><?= C::getLanguageString('projects_show_less') ?> 0 грн.</span>
+						<div class="progress">
+                                                    <div class="bar" style="width:100%;"></div>
+                                                </div>
+					</div>
+					<div class="grid-30 mobile-grid-100 tablet-grid-30">
+                                                <span class="already_done"><?= C::getLanguageString('moneycount_block_4') ?><br> <b><?= $this->data['p_current'] ?> грн.</b></span> 
+					</div>
+				</div>		
+					<p class="voted">
+                                            <?= C::getLanguageString('vote_text') ?> 
+                                            <b><?= $this->data['p_count_vote'] ?></b>
+                                        </p>
+                                        <p>
+                                            <script type="text/javascript" src="//yandex.st/share/share.js" charset="utf-8"></script>
+                                        <div 
+                                            data-yashareDescription="<?= $this->data['pl_description'] ?>" 
+                                            class="yashare-auto-init" 
+                                            data-yashareImage="<?= C::site_host . '/images/cropr_320x240/' . $img ?>"
+                                            data-yashareL10n="ru" 
+                                            cdata-yashareQuickServices="yaru,vkontakte,facebook,twitter,odnoklassniki,moimir" 
+                                            data-yashareTheme="counter"
+                                        ></div>
+                                        </p>	
+				<hr/>
+                                <?php if( !empty($this->donors_data) ) : ?>
+                                    <h2><?= C::getLanguageString('donors_by_project') ?></h2>
+                                    <div id="donors-data">
+                                        <?php foreach($this->donors_data as $value) : ?>
+                                            <div class="donor clearfix">					
+                                                    <img alt="<?= $value->u_surname . ' ' . $value->u_name ?>" src="/images/cropr_120x120/<?= $value->u_img; ?>" width="120" height="120">
+                                                    <?php if($value->pp_u_id > 0) : ?>
+                                                        <a href="<?= C::uri( array('donors', $value->pp_u_id) ) ?>" class="title"><?= $value->u_surname . ' ' . $value->u_name ?></a>
+                                                    <?php else : ?>
+                                                        <span class="article_title"><?= $value->u_surname . ' ' . $value->u_name ?></span> 
+                                                    <?php endif; ?>
+                                                    <div class="clearfix">
+                                                    <p><?= C::getLanguageString('project_pay_sum') ?> <?= $value->pp_sum ?> грн.</p>
+                                                    <p><?= C::getLanguageString('project_day_pay') ?> <?= date( "d.m.Y", strtotime($value->pp_data) ) ?></p>
+                                                    </div>
+                                            </div>
+                                        <?php endforeach ; ?>
+                                    </div>
+                                    <div id="pagination">
+                                            <a class="load-more-donors" href="javascript:void(0);"><?= C::getLanguageString('projects_show_more') ?></a>
+                                    </div>
+                                    <script type="text/javascript">
+                                        $('.load-more-donors').click(function() {
+                                            $.get('<?= '/' . C::$lang ?>/projects/donors/' + '<?= $this->data['p_id'] ?>/' +  $('#donors-data > .donor').length + '/', function(data) {
+                                                $("#donors-data").append(data);
+                                            });
+                                        });
+                                    </script>
+                                <?php endif; ?>
+			</div>
+		</div>
+	</div>
+</div>

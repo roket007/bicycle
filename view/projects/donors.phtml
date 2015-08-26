@@ -1,0 +1,16 @@
+<?php if( !empty($this->donors_data) ) : ?>
+    <?php foreach($this->donors_data as $value) : ?>
+        <div class="donor clearfix">					
+            <img alt="<?= $value->u_surname . ' ' . $value->u_name ?>" src="/images/cropr_120x120/<?= $value->u_img; ?>" width="120" height="120">
+            <?php if($value->pp_u_id > 0) : ?>
+                <a href="<?= C::uri( array('donors', $value->pp_u_id) ) ?>" class="title"><?= $value->u_surname . ' ' . $value->u_name ?></a>
+            <?php else : ?>
+                <span class="article_title"><?= $value->u_surname . ' ' . $value->u_name ?></span> 
+            <?php endif; ?>
+            <div class="clearfix">
+                <p><?= C::getLanguageString('project_pay_sum') ?> <?= $value->pp_sum ?> грн.</p>
+                <p><?= C::getLanguageString('project_day_pay') ?> <?= date( "d.m.Y", strtotime($value->pp_data) ) ?></p>
+            </div>
+        </div>
+    <?php endforeach ; ?>
+<?php endif; ?>

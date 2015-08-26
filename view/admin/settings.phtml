@@ -1,0 +1,31 @@
+<div style="margin:20px auto; width: 60%;">
+    <form method="POST" action="/admin/settings/">
+        <?php if( !empty($this->data) ) : ?>
+            <?php foreach($this->data as $key => $value) : ?>
+                <p><?= ( isset($value[$key . '_title']) ? $value[$key . '_title'] : '' ) ?></p>
+                <input name="top[]" value="<?= $key ?>" type="hidden" />
+                <input name="data[<?= $key ?>][<?= $key . '_title' ?>]" value="<?= $value[$key . '_title'] ?>" type="hidden" />
+                <?php if( is_array($value) ) : ?>
+                    <?php foreach($value as $key_per => $value_per) : ?>
+                         <?php if( isset($value[$key_per . '_title']) && isset($value[$key_per . '_type']) && strpos($key_per, '_title') === false && strpos($key_per, '_type') === false ) : ?>
+                            <p><?= $value[$key_per . '_title'] ?> 
+                                <input name="data[<?= $key ?>][<?= $key_per . '_title' ?>]" value="<?= $value[$key_per . '_title'] ?>" type="hidden" />
+                                <input name="data[<?= $key ?>][<?= $key_per . '_type' ?>]" value="<?= $value[$key_per . '_type'] ?>" type="hidden" />
+                                <?php if($value[$key_per . '_type'] == 'bool') : ?>
+                                    <select name="data[<?= $key ?>][<?= $key_per ?>]">
+                                        <option value="1" <?= ( $value[$key_per] ? 'selected="selected"' : '') ?>>ДА</option>
+                                        <option value="0" <?= ( $value[$key_per] ? '' : 'selected="selected"') ?>>НЕТ</option>
+                                    </select>
+                                <?php elseif($value[$key_per . '_type'] == 'text') : ?>
+                                    <input type="text" name="data[<?= $key ?>][<?= $key_per ?>]" value="<?= $value[$key_per] ?>" />
+                                <?php endif; ?>
+                            </p>
+                        <?php endif; ?>
+                    <?php endforeach ; ?>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        <?php endif; ?>
+        <input name="doit" value="1" type="hidden" />
+        <p><input value="Сохранить" type="submit" /></p>
+    </form>
+</div>

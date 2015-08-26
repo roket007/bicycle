@@ -1,0 +1,202 @@
+<?php
+    if( strpos($this->sum, ".") === false ) {
+        $grn = str_replace('a', '', $this->sum);
+        $kop = '00';
+    } else {
+        list($grn, $kop) = explode('.', $this->sum);
+        
+        if( strlen($kop) == 2 ) {
+            if($kop <= 9) {
+                $kop = '0' . str_replace('0', '', $kop);
+            }
+        } else {
+            $kop = $kop . '0';
+        }
+    }
+    
+    $email = C::getConfig('application');
+    $email = $email['contacts']['email'];
+?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<HTML>
+<HEAD>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+	<TITLE>Квитанція</TITLE>
+        <link rel="stylesheet" type="text/css" href="/css/print.css" media="print" />
+</HEAD>
+<BODY style="MARGIN-LEFT: 20px; MARGIN-RIGHT: 20px">
+<INPUT class="no-print" type="button" value="Печатать" onclick="window.print()" />
+<!-- шаблон -->
+
+<BR>
+<TABLE CELLSPACING="0" BORDER="1" CELLPADDING="3" WIDTH="560" style="FONT-SIZE: xx-small; FONT-FAMILY: sans-serif">
+<TR>
+	<TD ALIGN="left" WIDTH="200" HEIGHT="255" VALIGN="center">
+		<P align=center><FONT SIZE="2"><STRONG>ПОВІДОМЛЕННЯ</STRONG></FONT></P>
+		<P align=center>&nbsp;</P>
+		<P align=center>&nbsp;</P>
+		<P align=center>&nbsp;</P>
+		<P align=center>&nbsp;</P>
+		<P align=center>&nbsp;</P>
+		<P align=center>&nbsp;</P>
+		<P align=center>&nbsp;</P>
+		<P align=center>&nbsp;Касир</P>
+	</TD>
+	<TD ALIGN="left" WIDTH="300" HEIGHT="255" VALIGN="center">
+		<TABLE CELLSPACING="0" BORDER="0" CELLPADDING="3" WIDTH="100%" style="FONT-SIZE: xx-small; FONT-FAMILY: sans-serif">
+			<TR>
+				<TD>
+					<TABLE border=0 style="FONT-SIZE: xx-small; FONT-FAMILY: sans-serif">
+						<TR>
+							<TD COLSPAN=2>
+                            <p dir="ltr">Отримувач платежу</TD>
+						</TR>
+						<TR>
+							<TD COLSPAN=2 style="WIDTH: 100%; BORDER-BOTTOM: black 1px solid">
+                            <b><font size="2">Громадська організація ЛЮБЛЮ ЧЕРНІВЦІ</font></b></TD>
+						</TR>
+						<TR>
+							<TD COLSPAN=2 style="FONT-SIZE: smaller" align=middle>&nbsp;</TD>
+						</TR>
+						<TR valign=left>
+							<TD align=left width=1 nowrap>Установа банку</TD>
+							<TD nowrap style="WIDTH: 70%; BORDER-BOTTOM: black 1px solid">
+									<b>Чернівецька філія ПАТ Приватбанк</b></TD>
+						</TR>
+						<TR>
+                                                    <TD COLSPAN=2 style="BORDER-BOTTOM: black 1px solid"><p align="right">МФО <font size="1">банка: </font><font size="2"><b>356282</b></font></TD>
+						</TR>
+					</TABLE>
+				</TD>
+			</TR>
+			<TR>
+				<TD>
+					<TABLE border=1 CELLPADDING="0" cellSpacing=0 style="FONT-SIZE: xx-small; FONT-FAMILY: sans-serif" width="100%" height="181">
+						<TR VALIGN="center">
+							<TD HEIGHT="14">Розрахунковий рахунок №</TD>
+							<TD HEIGHT="14" colspan="3"><b><font size="2">&nbsp;26005051613083&nbsp;</font></b></TD>
+						</TR>
+						<TR VALIGN="center">
+							<TD ALIGN="left" COLSPAN="3" HEIGHT="14">ЄДРПОУ</TD>
+                                                        <TD HEIGHT="14" ALIGN="center"><b><font size="2">38647135</font></b></TD>
+						</TR>
+						<TR>
+							<TD COLSPAN="4" align=middle height="57">
+								<DIV style="WIDTH: 90%; BORDER-BOTTOM: black 1px solid"></DIV>
+								<DIV style="FONT-SIZE: smaller; WIDTH: 90%">ПЛАТНИК:прізвище, і. п., адреса<p></DIV>
+								<DIV style="WIDTH: 90%; BORDER-BOTTOM: black 1px solid"></DIV>
+							</TD></TR>
+							<TR>
+								<TD ALIGN="middle" COLSPAN="2" height="10">Призначення платежу</TD>
+								<TD ALIGN="middle" height="10" colspan="2">Сума</TD>
+							</TR>
+							<TR>
+								<TD ALIGN="left" COLSPAN="2" height="28"><b>Безповоротна фінансова допомога проекту №<?= $this->id ?> користувачем №<?= $this->user_id ?></b>								</TD>
+								<TD ALIGN="middle" height="28" colspan="2"><?php echo $grn . ' грн. ' . $kop. ' коп. '; ?></TD>
+							</TR>
+							<TR ALIGN="middle">
+								<TD ALIGN="right" COLSPAN="2" height="15">Всього: </TD>
+								<TD ALIGN="middle" height="14" colspan="2"><?php echo $grn . ' грн. ' . $kop. ' коп. '; ?></TD>
+						</TR>
+							<TR ALIGN="middle">
+								<TD ALIGN="left" COLSPAN="4" height="15">Платник: </TD>
+						</TR>
+					</TABLE>
+				</TD>
+			</TR>
+		</TABLE>
+	</TD>
+</TR>
+<TR>
+	<TD ALIGN="left" WIDTH="200" HEIGHT="255" VALIGN="center">
+		<P align=center><FONT 
+      size=2><STRONG>КВИТАНЦІЯ</STRONG></FONT></P>
+		<P align=center>&nbsp;</P>
+		<P align=center>&nbsp;</P>
+		<P align=center>&nbsp;</P>
+		<P align=center>&nbsp;</P>
+		<P align=center>&nbsp;</P>
+		<P align=center>&nbsp;</P>
+		<P align=center>&nbsp;</P>
+		<P align=center>&nbsp;Касир</P>
+	</TD>
+	<TD ALIGN="left" WIDTH="300" HEIGHT="255" VALIGN="center">
+		<TABLE CELLSPACING="0" BORDER="0" CELLPADDING="3" WIDTH="100%" style="FONT-SIZE: xx-small; FONT-FAMILY: sans-serif">
+			<TR>
+				<TD>
+					<TABLE border=0 style="FONT-SIZE: xx-small; FONT-FAMILY: sans-serif" height="81">
+						<TR>
+                                                    <TD COLSPAN=2 height="13">Отримувач платежу</TD>
+						</TR>
+						<TR>
+                                                    <TD COLSPAN=2 style="WIDTH: 100%; BORDER-BOTTOM: black 1px solid" height="13">
+                                                        <b><font size="2">Громадська організація ЛЮБЛЮ ЧЕРНІВЦІ</font></b>
+                                                    </TD>
+						</TR>
+						<TR>
+							<TD COLSPAN=2 style="FONT-SIZE: smaller" align=middle height="7"></TD>
+						</TR>
+						<TR valign=left>
+                                                    <TD align=left width=1 nowrap height="14">Установа банку</TD>
+                                                    <TD nowrap style="WIDTH: 70%; BORDER-BOTTOM: black 1px solid" height="14">
+                                                        <b>Чернівецька філія ПАТ Приватбанк</b>
+                                                    </TD>
+						</TR>
+						<TR>
+                                                    <TD COLSPAN=2 style="BORDER-BOTTOM: black 1px solid" height="14">
+                                                        <p align="right">МФО <font size="1">банка: </font>
+                                                        <font size="2" ><b>356282</b></font>
+                                                    </TD>
+						</TR>
+					</TABLE>
+				</TD>
+			</TR>
+			<TR>
+				<TD>
+					<TABLE border=1 CELLPADDING="0" cellSpacing=0 style="FONT-SIZE: xx-small; FONT-FAMILY: sans-serif" width="100%">
+						<TR VALIGN="center">
+							<TD HEIGHT="14">Розрахунковий рахунок №</TD>
+							<TD HEIGHT="14" colspan="3"><b><font size="2">&nbsp;26005051613083&nbsp;</font></b></TD>
+						</TR>
+						<TR VALIGN="center">
+							<TD ALIGN="left" COLSPAN="3" HEIGHT="14">ЄДРПОУ</TD>
+                                                        <TD HEIGHT="14" ALIGN="center"><b><font size="2">38647135</font></b></TD>
+						</TR>
+						<TR>
+							<TD COLSPAN="4" align=middle height="57">
+								<DIV style="WIDTH: 90%; BORDER-BOTTOM: black 1px solid"></DIV>
+								<DIV style="FONT-SIZE: smaller; WIDTH: 90%">ПЛАТНИК: прізвище, і. п., адреса<p></DIV>
+								<DIV style="WIDTH: 90%; BORDER-BOTTOM: black 1px solid"></DIV>
+							</TD></TR>
+                        <tr>
+								<TD ALIGN="middle" COLSPAN="2" height="14">Призначення платежу</TD>
+								<TD ALIGN="middle" height="14" colspan="2">Сума</TD>
+                        </tr>
+                        <tr>
+								<TD ALIGN="left" COLSPAN="2" height="28"><b><P class="p10 ft13">Безповоротна фінансова допомога проекту №<?= $this->id ?> користувачем №<?= $this->user_id ?></b>								</TD>
+								<TD ALIGN="middle" height="28" colspan="2"><?php echo $grn . ' грн. ' . $kop. ' коп. '; ?></TD>
+                        </tr>
+                        <tr>
+								<TD ALIGN="right" COLSPAN="2" height="14">Всього: </TD>
+								<TD ALIGN="middle" height="14" colspan="2"><?php echo $grn . ' грн. ' . $kop. ' коп. '; ?></TD>
+                        </tr>
+                        <tr>
+								<TD ALIGN="left" COLSPAN="4" height="14">Платник: </TD>
+                        </tr>
+					</TABLE>
+				</TD>
+			</TR>
+		</TABLE>
+	</TD>
+</TR>
+</TABLE>
+<p>
+    Після здійснення платежу повідомте по e-mail <span lang="en-us"><a href="mailto:<?= $email ?>"><?= $email ?></a> </span>наступну інформацію:<br>
+    1. Прізвище та ім'я відправника<br>
+    2. Точну суму оплати<br>
+    3. Назву проекту
+</p>
+<P class="p20 ft16">Увага!</P>
+<P class="p21 ft17">При сплаті квитанції обов'язково вказуйте призначення платежу!!!</P>
+</HTML>

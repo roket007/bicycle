@@ -1,0 +1,265 @@
+<style>
+    .type-title {
+        text-align: center;
+        font-size: 16px;
+        font-weight: bold;
+        background: #FF7F0B;
+        color: #fff;
+        border-bottom:1px solid #ccc;
+    }
+    
+    .add-path {
+        font-size: 20px;
+        color: green;
+        cursor: pointer;
+        background: #f1f1f1;
+        border: 1px solid #000;
+        border-radius: 5px;
+    }
+    
+    .add-path:hover {
+        background: #ddd;
+    }
+    
+    .delete-path {
+        font-size: 20px;
+        color: red;
+        cursor: pointer;
+        background: #f1f1f1;
+        border: 1px solid #000;
+        border-radius: 5px;
+    }
+    
+    .delete-path:hover {
+        background: #ddd;
+    }
+    
+    .pack-metadata {
+        height: 200px;
+        overflow: auto;
+    }
+    
+    .selected {
+        background-color: #FF7F0B;
+        color: #fff;
+    }
+    
+    .per_data {
+        border-bottom:1px solid #ccc;
+        padding: 2px;
+    }
+    
+    .per_data:hover {
+        background-color: #ccc;
+        cursor: pointer;
+    }
+</style>
+<div style="margin:10px auto; width: 60%;">
+    <?php foreach($this->types AS $key => $per_type) : ?>
+        <div class="<?= $per_type ?>" style="float: left; border: 1px solid #ccc; width: <?= ( 95 / count($this->types) ) ?>%;">
+            <div class="type-title"><?= $per_type ?></div>
+            <div class="some-<?= $per_type ?> pack-metadata">
+                <?php foreach($this->data as $key => $per_data) : ?>
+                    <?php if($per_data->md_type == $per_type) : ?>
+                        <div 
+                            class="per_data" 
+                            data-text="<?= $per_data->md_data ?>" 
+                            data-mdc="<?= $per_data->md_mdc_id ?>" 
+                            data-mda="<?= $per_data->md_mda_id ?>" 
+                            data-lang="<?= $per_data->md_lang ?>"
+                            data-type="<?= $per_data->md_type ?>"
+                            id="<?= $per_data->md_id ?>"
+                            >/<span class="per_controller"><?= $per_data->mdc_controller ?></span>/<span class="per_action"><?= $per_data->mda_action ?></span>/ - (<span class="per_lang"><?= $per_data->md_lang ?></span>)</div>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    <?php endforeach; ?>
+    <div style="clear: both"></div>
+    <div class="edit-form" style="margin-top: 20px;">
+        <p>Контроллер: 
+            <select id="controllers-path">
+                <?php foreach($this->paths as $key => $per_path) : ?>
+                    <option id="<?= ( !empty($per_path->mdc_actions) ? $per_path->mdc_actions : 0 ) ?>" value="<?= $per_path->mdc_id ?>" ><?= $per_path->mdc_controller ?></option>
+                <?php endforeach; ?>
+            </select>
+        </p>
+        <p>Экшен (страница): 
+            <select id="actions-path">
+                <?php if( isset($this->paths[0]) && !empty($this->paths[0]->mdc_actions) ) : ?>
+                    <?php $actions = explode(",", $this->paths[0]->mdc_actions); ?>
+                    <?php foreach($actions as $per_action) : ?>
+                        <?php list($action_id, $action_path) = explode(":", $per_action); ?>
+                        <option value="<?= $action_id ?>"><?= $action_path ?></option>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </select>
+        </p>
+        <p>Язык: 
+            <select id="lang-paths">
+                <?php foreach($this->langs as $key => $path_lang) : ?>
+                    <option value="<?= $path_lang?>"><?= $path_lang?></option>
+                <?php endforeach; ?>
+            </select>
+        </p>
+        <p>Тип: 
+            <select id="type-name">
+                <?php foreach($this->types as $key => $type) : ?>
+                    <option value="<?= $type?>"><?= $type?></option>
+                <?php endforeach; ?>
+            </select>
+        </p>
+        <p>Значение поля: <input type="text" id="md_data" value="" style="width: 500px;" placeholder="Значение поля" /></p>
+        <p><input rel="/admin/savemetadata/" id="save-path" type="button" value="Сохранить" /></p>
+    </div>
+</div>
+<script type="text/javascript">        
+    var _change_controller_action = function(data) {
+        if (typeof data == "string") {
+            var _data = data;
+        } else {
+            var _data = $( $(this).find('option:selected').get(0) ).attr('id');
+        }
+
+        if(_data !== '0') {
+            var _html = [];
+            var _exploded_action = _data.split(',');
+
+            for(var _key in  _exploded_action) {
+                var _per_action_data = _exploded_action[_key].split(':');
+                _html.push('<option value="' + _per_action_data[0] + '">' + _per_action_data[1] + '</option>');
+            }
+
+            $('#actions-path').html( _html.join("\n") );
+        } else {
+            $('#actions-path').html('');
+        }
+    };
+
+    $('#controllers-path').bind("change", _change_controller_action);
+
+    var _clear_form = function() {
+        $('#md_data').val('');
+        $('#save-path').attr('rel', '/admin/savemetadata/');
+        $('#save-path').val('Сохранить');
+    };
+
+    var _select_path = function() {
+
+        if( $(this).hasClass('selected') ) {
+            $(this).removeClass('selected');
+            $('#save-path').attr('rel', '/admin/savemetadata/');
+            $('#save-path').val('Сохранить');
+            _clear_form();
+        } else {
+            $('.per_data').removeClass('selected');
+            $('#save-path').attr('rel', '/admin/updatemetadata/');
+            $('#save-path').val('Обновить');
+            $(this).addClass('selected');
+            var _lang = $(this).data('lang');
+            var _data = $(this).data('text');
+            var _controller = $(this).data('mdc');
+            var _action = $(this).data('mda');
+            var _type = $(this).data('type');
+            $('#lang-paths').val(_lang);
+            $('#controllers-path').val(_controller);
+            $('#actions-path').html('');
+            _change_controller_action( $("#controllers-path option:selected").attr('id') );
+            $('#actions-path').val(_action);
+            $('#md_data').val(_data);
+            $('#type-name').val(_type);
+        }
+    };
+
+    $('.per_data').bind("click", _select_path);
+
+    $('#save-path').click(function() {
+        var _regexp_data = /^[a-zа-я0-9][a-zа-я0-9\-\_\.\,\?\!\s]+$/gi;
+
+        if( !_regexp_data.test( $('#md_data').val() ) ) {
+            alert('Укажите значение поля');
+            return;
+        }
+
+        if( $(this).attr('rel') == '/admin/savemetadata/' ) {
+            $.post(
+                $(this).attr('rel'),
+                {
+                    md_mdc_id : $('#controllers-path').val(),
+                    md_mda_id : $('#actions-path').val(),
+                    md_lang : $('#lang-paths').val(),
+                    md_type : $('#type-name').val(),
+                    md_data : $('#md_data').val()
+                },
+                function(data) {
+                    if(data == '0') {
+                        alert('Данные такого типа для этого раздела уже существуют!');
+                    } else {
+                        $( '.some-' + $('#type-name').val() ).append('\
+                            <div \
+                                class="per_data" \
+                                data-text="' + $('#md_data').val() + '" \
+                                data-mdc="' + $('#controllers-path').val() + '" \
+                                data-mda="' + $('#actions-path').val() + '" \
+                                data-lang="' + $('#lang-paths').val() + '"\
+                                data-type="' + $('#type-name').val() + '"\
+                                id="' + data + '"\
+                            >/<span class="per_controller">' + $('#controllers-path option:selected').html() + '</span>/<span class="per_action">' + $('#actions-path option:selected').html() + '</span>/ - (<span class="per_lang">' + $('#lang-paths').val() + '</span>)</div>\
+                        ');
+    
+                        $('.per_data').unbind("click");
+                        $('.per_data').bind("click", _select_path);
+                        alert('Успешно сохранено');
+                        _clear_form();
+                    }
+                }
+            );
+        } else {
+            $.post(
+                $(this).attr('rel'),
+                {
+                    md_id : $('.per_data.selected').attr('id'),
+                    md_mdc_id : $('#controllers-path').val(),
+                    md_mda_id : $('#actions-path').val(),
+                    md_lang : $('#lang-paths').val(),
+                    md_type : $('#type-name').val(),
+                    md_data : $('#md_data').val()
+                },
+                function(data) {
+                    if(data == '0') {
+                        alert('Данные такого типа для этого раздела уже существуют!');
+                    } else {
+                        if( $('#type-name').val() !== $('.per_data.selected').data('type') ) {
+                            $( '.some-' + $('#type-name').val() ).append('\
+                                <div \
+                                    class="per_data" \
+                                    data-text="' + $('#md_data').val() + '" \
+                                    data-mdc="' + $('#controllers-path').val() + '" \
+                                    data-mda="' + $('#actions-path').val() + '" \
+                                    data-lang="' + $('#lang-paths').val() + '"\
+                                    data-type="' + $('#type-name').val() + '"\
+                                    id="' + $('.per_data.selected').attr('id') + '"\
+                                >/<span class="per_controller">' + $('#controllers-path option:selected').html() + '</span>/<span class="per_action">' + $('#actions-path option:selected').html() + '</span>/ - (<span class="per_lang">' + $('#lang-paths').val() + '</span>)</div>\
+                            ');
+                            $('.per_data.selected').remove();
+                            _clear_form();
+                        } else {
+                            $('.per_data.selected').data( 'text', $('#md_data').val() );
+                            $('.per_data.selected').data( 'mdc', $('#controllers-path').val() );
+                            $('.per_data.selected').data( 'mda', $('#actions-path').val() );
+                            $('.per_data.selected').data( 'lang', $('#lang-paths').val() );
+                            $('.per_data.selected').data( 'type', $('#type-name').val() );
+                            $( $('.per_data.selected').find('.per_controller').get(0) ).html( $('#controllers-path option:selected').html() );
+                            $( $('.per_data.selected').find('.per_action').get(0) ).html( $('#actions-path option:selected').html() );
+                            $( $('.per_data.selected').find('.per_lang').get(0) ).html( $('#lang-paths').val() );
+                        }
+
+                        $('.per_data').unbind("click");
+                        $('.per_data').bind("click", _select_path);
+                        alert('Успешно ОБНОВЛЕНО');
+                    }
+                }
+            );
+        }
+    });
+</script>

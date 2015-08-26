@@ -1,0 +1,36 @@
+<div class="grid-100 hide-on-mobile tablet-grid-100"> 
+    <div id="slider_block">
+        <div id="fwslider">
+            <div class="slider_container sliderkit-panels">
+                <?php if( !empty($this->data) ) : ?>
+                <?php $arr = array_slice($this->data, 0, 3); ?>
+                    <?php foreach($arr as $key => $value) : ?>
+                        <div class="slide sliderkit-panel">
+                            <img alt="" src="/images/cropr_633x318/<?= array_shift( explode(",", $value->images) ) ?>" />
+                            <div class="slide_content">
+                                <div class="slide_content_wrap">
+                                    <h4 class="title"><?= $value->pl_title ?></h4>
+                                    <p class="description"><?= array_shift( explode('{read_more}', $value->pl_text) ) ?></p>
+                                    <a class="readmore" href="<?= C::uri( array('projects', $value->p_id . '-' . $value->pl_alias) ) ?>">
+                                        <?= C::getLanguageString('readmore_project') ?>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+$(document).ready(function() {
+//    $(".slider_container").scrollable({
+//            items: ".slide",
+//            size: 3,
+//            autoplay: true
+//    });
+    //$("#fwslider").scrollable({circular: true}).autoscroll({ autoplay: false });
+    $(".slider_container").sliderkit({auto: true, circular: true});
+});
+</script>

@@ -1,0 +1,68 @@
+<div class="grid-container"> 
+    <div class="grid-100 mobile-grid-100 tablet-grid-100"> 
+        <div id="main_content" class="clearfix">
+            <h1><?= C::getLanguageString('done_title') ?></h1>
+            <div id="left_column" class="hide-on-mobile grid-20 tablet-grid-20">
+                <h4><?= C::getLanguageString('projects_sort') ?></h4>
+                <ul class="sort">
+                    <li><a class="new active" rel="/new/" href="javascript:void(0);" title="<?= C::getLanguageString('projects_sort_new_title') ?>"><?= C::getLanguageString('projects_sort_new') ?></a></li>
+                    <li><a href="javascript:void(0);" class="rating" rel="/vote/" title="<?= C::getLanguageString('projects_sort_rating_title') ?>"><?= C::getLanguageString('projects_sort_rating') ?></a></li>
+                </ul>
+            </div>
+            <?php if( !empty($this->data) ) : ?>
+                <div id="content" class="grid-80 mobile-grid-100 tablet-grid-80">
+                    <div id="body-content">
+                        <?php foreach($this->data as $key => $value) : ?>
+                            <div class="project clearfix">
+                                <div class="clearfix">
+                                    <span class="article_title"><?= $value->title ?></span>
+                                    <span class="date_publish"><?= C::getLanguageString('date_start') ?> <?= date( "d.m.Y", strtotime($value->date_start) ); ?></span>
+                                </div>
+                                <img alt="<?= $value->description ?>" src="/images/cropr_200x150/<?= array_shift( explode(",", $value->images) ) ?>" width="200" height="150">
+                                <div class="clearfix">
+                                    <?php list($value->text,) = explode("{read_more}", $value->text); ?>
+                                    <p><?= strip_tags($value->text) ?></p>
+                                    <a class="readmore" href="<?= C::uri( array('done', $value->id . '-' . $value->alias) ) ?>"><?= C::getLanguageString('done_show_more') ?></a>
+                                    <p class="voted"><?= C::getLanguageString('projects_show_voted') ?> <b><?= $value->count_vote ?></b></p>	
+                                </div>
+                                <div class="clearfix">	
+                                    <span class="budget"><?= C::getLanguageString('donor_now_get') ?> <?= $value->money_need ?> грн.</span>
+                                    <span class="needed_done"><?= C::getLanguageString('projects_show_less') ?> <?= ($value->money_need >= $value->money_now ? $value->money_need - $value->money_now : 0) ?> грн.</span>
+                                    <div class="progress">
+                                        <div class="bar" style="width:<?= ( ($value->money_now / $value->money_need) * 100 ) ?>%;"></div>
+                                    </div>
+                                </div>	
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                    <div id="pagination">
+                        <a href="javascript:void(0);" class="load-more" title="<?= C::getLanguageString('projects_show_more_title') ?>"><?= C::getLanguageString('projects_show_more') ?></a>
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $('.sort a').each(function(el){
+                    var _link = $(this).attr('rel');
+                    
+                    $(this).click(function(el){
+                        if( !$(this).hasClass('active') ) {
+                            $('.sort a').each(function(){ 
+                                $(this).removeClass('active');
+                            });
+                            $(this).addClass('active');
+                            $('#body-content').load('<?= '/' . C::$lang ?>/done/order' + _link);
+                        }
+                    });
+                });
+                
+                $('.load-more').click(function(){
+                    $.get('<?= '/' . C::$lang ?>/done/order' + $('.sort a.active').attr('rel') + $('#body-content > .project').length + '/', function(data) {
+                        $("#body-content").append(data);
+                    });
+                });
+            });
+        </script>
+	</div>
+</div>

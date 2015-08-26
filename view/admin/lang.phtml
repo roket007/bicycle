@@ -1,0 +1,34 @@
+<pre><?php $key = 1; ?></pre>
+<form method="post">
+<p align="center">
+    <input style="height: 40px; width: 120px;" type="submit" value="Сохранить" />
+</p>
+<table border="1" width="60%" align="center" cellpadding="2">
+    <thead style="background: #969798;">
+        <tr>
+            <td align="center">Константа</td>
+            <td align="center">Украинский</td>
+            <td align="center">Русский</td>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->const as $const => $langs) : ?>
+        <tr style="background-color: <?= ( !($key % 2) ? '#ccc' : '#fff' ) ?>;">
+            <td align="center"><?= $const ?></td>
+            <?php foreach($this->langs as $lang) : ?>
+                <?php if( isset($langs[$lang]) ) : ?>
+                    <td><input style="width: 99%;" type="text" name="data[<?= $lang ?>][<?= $const ?>]" value="<?= $langs[$lang] ?>" /></td>
+                <?php else : ?>
+                    <td><input style="width: 99%;" type="text" name="data[<?= $lang ?>][<?= $const ?>]" value="" /></td>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </tr>
+        <?php $key++ ?>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+<p align="center">
+    <input type="hidden" name="save" value="1" />
+    <input style="height: 40px; width: 120px;" type="submit" value="Сохранить" />
+</p>
+</form>

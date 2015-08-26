@@ -1,0 +1,18 @@
+<?php if( !empty($this->data) ) : ?>
+    <?php $this->data = unserialize($this->data); ?>
+    <div id="breadcrumbs" class="hide-on-mobile"> 
+        <div class="grid-container"> 
+            <div class="grid-100 mobile-grid-100 tablet-grid-100"> 
+                <b><?= C::getLanguageString('you_are_heare') ?>:</b>
+                <?php $last = array_pop($this->data); ?>
+                
+                <?php if( !empty($this->data) ) : ?>
+                    <?php foreach($this->data as $key => $value) : ?>
+                        <a href="<?= $value['url'] ?>" title="<?= $value['name'] ?>"><?= $value['name'] ?></a>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+                <span><?= $last['name'] ?></span>
+            </div> 	
+        </div> 
+    </div>
+<?php endif; ?>

@@ -1,0 +1,85 @@
+<?php $lvl = 1; ?>
+<?php
+    function showRecursive($array, $full_data, $stripped, $lvl)
+    {
+        echo '<ul>';
+            if( !empty($array) ) {
+                foreach($array as $per_path) {
+                    $current = str_replace($stripped, '', $per_path);
+
+                    if( isset($full_data[$per_path]) ) {
+                        echo '<li id="' . str_replace('/', '', $current) . '"><span>';
+                        echo $current;
+                        echo '<a class="clear-cache" href="javascript:void(0);" rel="' . str_replace($stripped, '', $current) . '" class="clear-cache">Очистить</a></span>';
+                        showRecursive( $full_data[$per_path], $full_data, $stripped, ($lvl + 1) );
+                        echo '</li>';
+                    } else {
+                        echo '<li id="' . str_replace('/', '', $current) . '"><span>';
+                        echo $current;
+                        echo '<a class="clear-cache" href="javascript:void(0);" rel="' . str_replace($stripped, '', $current) . '" class="clear-cache">Очистить</a></span>';
+                        echo '</li>';
+                    }
+                }
+            }
+        echo '</ul>';
+    }
+?>
+<style>
+    li {
+        list-style:circle;
+        min-height: 20px;
+        padding: 4px;
+    }
+    
+    .top {
+        padding-left: 5px;
+        margin-bottom: 3px;
+        background: #eee;
+        padding: 5px;
+    }
+    
+    li a{
+        text-decoration: none;
+        outline: none;
+        background-color: #FF7F0B;
+        color: #fff;
+        padding: 1px;
+        border-radius: 4px;
+        margin-left: 5px;
+    }
+    
+    span {
+        background: #ccc;
+        padding: 2px;
+    }
+</style>
+<div style="margin:10px auto; width: 60%;">
+    <ul>
+        <?php if( is_array($this->data) && !empty($this->data) ) : ?>
+            <?php $top_dirs = array_shift($this->data); ?>
+            <?php foreach($top_dirs as $key => $per_top_dir) : ?>
+                <li class="top" id="<?= str_replace('/', '', str_replace($this->stripped, '', $per_top_dir) ) ?>" ><span>
+                    <?= str_replace($this->stripped, '', $per_top_dir) ?> 
+                    <a href="javascript:void(0);" rel="<?= str_replace($this->stripped, '', $per_top_dir) ?>" class="clear-cache">Очистить</a></span>
+                    <?php if( isset($this->data[$per_top_dir]) ) : ?>
+                        <?php showRecursive($this->data[$per_top_dir], $this->data, $this->stripped, $lvl); ?>
+                    <?php endif; ?>
+                </li>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </ul>
+</div>
+<script type="text/javascript">
+    $('.clear-cache').bind("click", function() {
+        var _id = $(this).attr('rel').replace(/\//g, "");
+        
+        $.post('/admin/flushcache/', { path : $(this).attr('rel') }, function(data) {
+            if(data == '0') {
+                alert('Кэш не удален!');
+            } else {
+                alert('Кэш успешно удален!');
+                $('#' + _id).remove();
+            }
+        });
+    });
+</script>

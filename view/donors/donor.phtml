@@ -1,0 +1,97 @@
+<?php if( !empty($this->data) ) : ?>
+    <div class="grid-container"> 
+            <div class="grid-100 mobile-grid-100 tablet-grid-100"> 
+                    <div id="main_content" class="clearfix">
+                            <div id="donor_details">
+                                    <h1><?= $this->data['u_surname'] . ' ' . $this->data['u_name'] ?> &mdash; <?= C::getLanguageString('donor_h1') ?></h1>
+                                            <img class="donor_image" alt="<?= $this->data['u_surname'] . ' ' . $this->data['u_name'] ?>" src="/images/cropr_300x220/<?= $this->data['u_img']; ?>" width="300" height="220">	
+                                            <div id="donor_stats">
+                                                <p><?= C::getLanguageString('donor_all_sum') ?> <b><?= (!empty($this->data['money_sum']) ? $this->data['money_sum'] : 0 ); ?> грн.</b></p>
+                                                <p><?= C::getLanguageString('donor_all_supported_projects') ?> <b><?= $this->data['project_support']; ?></b></p>
+                                            </div>
+                                            <?php if( Fw_Auth::isValid() && Fw_Auth::get('id') == $this->data['u_id'] ) : ?>
+                                                <div id="donor_stats">
+                                                    <form enctype="multipart/form-data" action="" method="post">
+                                                        <p>
+                                                            <strong><?= C::getLanguageString('user_name') ?>: </strong><span class="small-info">(от 2 до 100 сим.)</span><br/>
+                                                            <input style="width: 200px;" type="text" name="u_name" placeholder="<?= C::getLanguageString('user_name') ?>" value="<?= $this->data['u_name']; ?>" /><br/>
+                                                            <span class="small-info-error"><?= ( isset($this->error['u_name']) ? $this->error['u_name'] : '' ) ?></span>
+                                                        </p>
+                                                        <div style="height: 5px; clear: both;"></div>
+                                                        <p>
+                                                            <strong><?= C::getLanguageString('user_surname') ?>: </strong><span class="small-info">(от 2 до 100 сим.)</span> <br/>
+                                                            <input style="width: 200px;" type="text" name="u_surname" placeholder="<?= C::getLanguageString('user_surname') ?>" value="<?= $this->data['u_surname']; ?>" /><br/>
+                                                            <span class="small-info-error"><?= ( isset($this->error['u_surname']) ? $this->error['u_surname'] : '' ) ?></span>
+                                                        </p>
+                                                        <div style="height: 5px; clear: both;"></div>
+                                                        <p>
+                                                            <strong><?= C::getLanguageString('user_self') ?> </strong><span class="small-info">(до 1500 сим.)</span><br/>
+                                                            <textarea rows="10" cols="28" placeholder="<?= C::getLanguageString('user_about_self') ?>" name="u_information"><?= str_replace("<br />", "\n", $this->data['u_information']); ?></textarea><br/>
+                                                            <span class="small-info-error"><?= ( isset($this->error['u_information']) ? $this->error['u_information'] : '' ) ?></span>
+                                                        </p>
+                                                        <div style="height: 5px; clear: both;"></div>
+                                                        <p>
+                                                            <strong><?= C::getLanguageString('address') ?> </strong><span class="small-info">(до 100 сим.)</span><br/>
+                                                            <input style="width: 200px;" type="text" name="u_address" placeholder="<?= C::getLanguageString('address') ?>" value="<?= $this->data['u_address']; ?>" /><br/>
+                                                            <span class="small-info-error"><?= ( isset($this->error['u_address']) ? $this->error['u_address'] : '' ) ?></span>
+                                                        </p>
+                                                        <div style="height: 5px; clear: both;"></div>
+                                                        <p>
+                                                            <strong><?= C::getLanguageString('avatar') ?>: </strong><span class="small-info">(до 2Мб.)</span><br/>
+                                                            <input type="file" name="u_img" placeholder="<?= C::getLanguageString('avatar') ?>" /><br/>
+                                                            <span class="small-info-error"><?= ( isset($this->error['u_img']) ? $this->error['u_img'] : '' ) ?></span>
+                                                        </p>
+                                                        <div style="height: 5px; clear: both;"></div>
+                                                        <input type="hidden" name="antispam" value="<?= $this->antispam ?>" />
+                                                        <p><input type="submit" value="<?= C::getLanguageString('save') ?>" /></p>
+                                                    </form>
+                                                </div>
+                                            <?php endif; ?>
+                                            <?= $this->data['u_information']; ?>
+                                            <?php if( !empty($this->data['u_address']) ) : ?>
+                                                <p><b><?= C::getLanguageString('address') ?></b> <?= $this->data['u_address']; ?></p>
+                                            <?php endif; ?>
+                                            <p><b><?= C::getLanguageString('donors_day_reg') ?></b> <?= date("d.m.Y", strtotime($this->data['u_date_reg']) ) ?></p>
+                                    <hr/>
+                                    <?php if( !empty($this->projects_data) ) : ?>
+                                        <h2><?= C::getLanguageString('donor_help_projects') ?></h2>
+                                        <?php foreach($this->projects_data as $value) : ?>
+                                            <div class="project clearfix">
+                                                    <div class="clearfix">
+                                                        <span class="article_title"><?= $value->pl_title ?></span> 
+                                                        <span class="date_publish"><?= C::getLanguageString('date_start') ?> <?= date( "d.m.Y", strtotime($value->p_date_create) ) ?></span>
+                                                    </div> 
+                                                    <img alt="<?= $value->pl_title ?>" src="/images/cropr_200x150/<?= array_shift( explode(",", $value->images) ) ?>" width="200" height="150">	
+                                                    <div class="clearfix">
+                                                    <?php list($value->pl_text,) = explode("{read_more}", $value->pl_text); ?>
+                                                    <p><?= strip_tags($value->pl_text) ?></p>
+                                                    <?php if($value->p_current >= $value->p_need) : ?>
+                                                        <a class="readmore" href="<?= '/' . $value->pl_lang . '/done/' . $value->p_id . '-' . $value->pl_alias .'/' ?>"><?= C::getLanguageString('done_show_more') ?></a>
+                                                    <?php else: ?>
+                                                        <a class="readmore" href="<?= '/' . $value->pl_lang . '/projects/' . $value->p_id . '-' . $value->pl_alias .'/' ?>"><?= C::getLanguageString('projects_show_support') ?></a>
+                                                    <?php endif; ?>
+                                                    <p class="voted"><?= C::getLanguageString('projects_show_voted') ?> <b><?= $value->p_count_vote ?></b></p>	
+                                                    </div>
+                                                    <div class="clearfix">
+                                                        <?php if($value->p_current >= $value->p_need) : ?>
+                                                            <span class="budget"><?= C::getLanguageString('donor_now_get') ?> <?= $value->p_need ?> грн.</span>
+                                                            <span class="needed_done"><?= C::getLanguageString('projects_show_less') ?> 0 грн.</span>
+                                                            <div class="progress">
+                                                                <div class="bar" style="width:100%;"></div>
+                                                            </div>
+                                                        <?php else: ?>
+                                                            <span class="budget"><?= C::getLanguageString('projects_show_need') ?> <?= $value->p_need ?> грн.</span>
+                                                            <span class="needed"><?= C::getLanguageString('projects_show_less') ?> <?= ($value->p_need - $value->p_current) ?> грн.</span>
+                                                            <div class="progress">
+                                                                <div class="bar" style="width:<?= ( ($value->p_current / $value->p_need) * 100 ) ?>%;"></div>
+                                                            </div>
+                                                        <?php endif; ?>
+                                                    </div>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                            </div>
+                    </div>
+            </div>
+    </div>
+<?php endif; ?>

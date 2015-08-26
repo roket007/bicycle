@@ -1,0 +1,11 @@
+<?php if( is_array($this->data) ) : ?>
+    <?php foreach($this->data as $key => $per_data) : ?>
+        <tr calss="per_pays pays<?= $per_data->pp_id ?>" id="pays<?= $per_data->pp_id ?>" style="padding: 2px;">
+            <td><b>Сумма:</b> <span class="pp_sum"><?= $per_data->pp_sum ?></span></td>
+            <td><span class="pp_data"><?= date( "d.m.Y H:i:s", strtotime($per_data->pp_data) ) ?></span></td>
+            <td><b>Логин </b> <span class="pp_sum"><?= $per_data->u_login ?></span></td>
+            <td><b>Ф.И.О </b> <span class="pp_sum"><?= $per_data->u_surname ?> <?= $per_data->u_name ?></span></td>
+            <td class="drop-pay" id="<?= $per_data->pp_id ?>">Удалить</td>
+        </tr>
+    <?php endforeach; ?>
+<?php endif; ?>

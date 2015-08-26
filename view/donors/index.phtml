@@ -1,0 +1,66 @@
+<div class="grid-container"> 
+    <div class="grid-100 mobile-grid-100 tablet-grid-100"> 
+            <div id="main_content" class="clearfix">
+                <h1><?= C::getLanguageString('donors_title') ?></h1>
+                <div id="left_column" class="hide-on-mobile grid-20 tablet-grid-20">
+                    <h4><?= C::getLanguageString('donors_sort_by') ?></h4>
+                    <ul class="sort">
+                        <li><a href="javascript:void(0);" class="donors-sort active" rel="/new/"><?= C::getLanguageString('donors_sort_new') ?></a></li>
+                        <li><a href="javascript:void(0);" rel="/project/" class="donors-sort"><?= C::getLanguageString('donors_sort_project') ?></a></li>
+                        <li><a href="javascript:void(0);" rel="/count/" class="donors-sort"><?= C::getLanguageString('donors_sort_count') ?></a></li>
+                    </ul>
+                </div>
+
+                <?php if( !empty($this->data) ) : ?>
+                    <div id="content" class="grid-80 mobile-grid-100 tablet-grid-80">
+                        <div id="body-content">
+                            <?php foreach($this->data as $value) : ?>
+                                <div class="donor clearfix">					
+                                    <img alt="<?= $value->name . ' ' . $value->surname ?>" src="/images/cropr_120x120/<?= $value->img; ?>" width="120" height="120">
+                                    <?php if($value->id > 0) : ?>
+                                        <a href="<?= C::uri( array('donors', $value->id) ) ?>" class="title"><?= $value->name . ' ' . $value->surname ?></a>
+                                        <div class="clearfix">
+                                            <p><?= C::getLanguageString('donors_projects_supported') ?> <span class="bolder"><?= $value->count_pays ?></span>, <?= C::getLanguageString('donors_for_sum') ?> <span class="bolder"><?= ( !empty($value->money_sum) ? $value->money_sum : 0 ) ?> грн.</span></p>
+                                            <p><?= C::getLanguageString('donors_last_sum') ?> <?= ( !empty($value->last_pay_sum) ? array_shift( explode(",", $value->last_pay_sum) ) : 0 ) ?> грн. (<?= date( "d.m.Y", strtotime($value->last_pay_date) ) ?>)</p>
+                                            <p><?= C::getLanguageString('donors_day_reg') ?> <?= date( "d.m.Y", strtotime($value->date_reg) ) ?></p>
+                                        </div>
+                                    <?php else : ?>
+                                        <span class="article_title"><?= $value->name . ' ' . $value->surname ?></span>
+                                        <div class="clearfix">
+                                            <p><?= C::getLanguageString('donors_last_sum') ?> <?= array_shift( explode(",", $value->last_pay_sum) ) ?> грн. (<?= date( "d.m.Y", strtotime($value->last_pay_date) ) ?>)</p>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                        <div id="pagination">
+                            <a class="load-more" href="javascript:void(0);" ><?= C::getLanguageString('projects_show_more') ?></a>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            <script type="text/javascript">
+                $(document).ready(function(){
+                    $('.sort a').each(function(el){
+                        var _link = $(this).attr('rel');
+
+                        $(this).click(function(el){
+                            if( !$(this).hasClass('active') ) {
+                                $('.sort a').each(function(){ 
+                                    $(this).removeClass('active');
+                                });
+                                $(this).addClass('active');
+                                $('#body-content').load('<?= '/' . C::$lang ?>/donors/order' + _link);
+                            }
+                        });
+                    });
+
+                    $('.load-more').click(function(){
+                        $.get('<?= '/' . C::$lang ?>/donors/order' + $('.sort a.active').attr('rel') + $('#body-content > .donor').length + '/', function(data) {
+                            $("#body-content").append(data);
+                        });
+                    });
+                });
+            </script>
+        </div>
+    </div>
+</div>

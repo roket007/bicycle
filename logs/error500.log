@@ -1,0 +1,115 @@
+2013.11.18 16:51:22 [f:"/var/www/roketk12393/data/www/b.aniport.net/classes/class.view.php", l:"131"] Отсутствует javascript файл! Template = ./js/main.js
+2013.11.19 00:38:02 [f:"/var/www/roketk12393/data/www/b.aniport.net/classes/class.view.php", l:"131"] Отсутствует javascript файл! Template = ./js/main.js
+2013.11.19 14:26:34 [f:"/var/www/roketk12393/data/www/blago_library/classes/class.model.php", l:"30"] Невозможно загрузить модель ./models/index.php
+2013.11.19 14:27:27 [f:"/var/www/roketk12393/data/www/blago_library/classes/class.view.php", l:"170"] Отсутствует файл шаблона контента! Controller = ./view/index/index.phtml
+2013.12.09 13:57:05 [f:"/var/www/roketk12393/data/www/blago_library/fw/view.php", l:"49"] Неполноценный блок /var/www/roketk12393/data/www/blago_library/blocks/breadcrumbs
+2013.12.11 02:28:12 [f:"/var/www/roketk12393/data/www/blago_library/fw/model.php", l:"80"] Невозможно выполнить запрос! "
+            INSERT INTO contacts_feedback (
+                cf_name,
+                cf_email,
+                cf_subject,
+                cf_text
+            ) VALUES {
+                Павел,
+                roket007@yandex.ru,
+                Привет,
+                Скажите как вас найти?
+            )
+        " You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '{
+                Павел,
+                roket007@yandex.ru,
+           ' at line 6URI: /contacts/
+2013.12.11 02:28:51 [f:"/var/www/roketk12393/data/www/blago_library/fw/model.php", l:"80"] Невозможно выполнить запрос! "
+            INSERT INTO contacts_feedback (
+                cf_name,
+                cf_email,
+                cf_subject,
+                cf_text
+            ) VALUES {
+                'Павел',
+                'roket007@yandex.ru',
+                'Привет',
+                'Скажите как вас найти?'
+            )
+        " You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '{
+                'Павел',
+                'roket007@yandex.ru',
+       ' at line 6URI: /contacts/
+2013.12.11 02:29:49 [f:"/var/www/roketk12393/data/www/blago_library/fw/model.php", l:"80"] Невозможно выполнить запрос! "
+            INSERT INTO contacts_feedback (
+                cf_name,
+                cf_email,
+                cf_subject,
+                cf_text
+            ) VALUES {
+                'Павел',
+                'roket007@yandex.ru',
+                'Привет',
+                '&ETH;&iexcl;&ETH;&ordm;&ETH;&deg;&ETH;&para;&ETH;&cedil;&Ntilde;�&ETH;&micro; &ETH;&ordm;&ETH;&deg;&ETH;&ordm; &ETH;&sup2;&ETH;&deg;&Ntilde;� &ETH;&frac12;&ETH;&deg;&ETH;&sup1;&Ntilde;�&ETH;&cedil;?'
+            )
+        " You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '{
+                'Павел',
+                'roket007@yandex.ru',
+       ' at line 6URI: /contacts/
+2013.12.11 02:30:02 [f:"/var/www/roketk12393/data/www/blago_library/fw/model.php", l:"80"] Невозможно выполнить запрос! "
+            INSERT INTO contacts_feedback (
+                cf_name,
+                cf_email,
+                cf_subject,
+                cf_text
+            ) VALUES {
+                'Павел',
+                'roket007@yandex.ru',
+                'Привет',
+                'Скажите как вас найти?'
+            )
+        " You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '{
+                'Павел',
+                'roket007@yandex.ru',
+       ' at line 6URI: /contacts/
+2013.12.11 02:50:56 Can't send email!
+2013.12.21 03:44:21 [f:"/var/www/roketk12393/data/www/blago_library/fw/view.php", l:"143"] Отсутствует javascript файл! Template = /var/www/roketk12393/data/www/blago_library/js/main.jsURI: /user/login/
+2013.12.21 04:01:55 [f:"/var/www/roketk12393/data/www/blago_library/fw/view.php", l:"143"] Отсутствует javascript файл! Template = /var/www/roketk12393/data/www/blago_library/js/main.jsURI: /user/login/
+2013.12.21 20:28:29 [f:"/var/www/roketk12393/data/www/blago_library/fw/model.php", l:"122"] Невозможно создать кэш базы данынх! "
+            SELECT 
+                p.*,
+                pl.*,
+                GROUP_CONCAT(DISTINCT pp.pp_src ORDER BY pp.pp_ord SEPARATOR ',') AS images
+             FROM projects AS p
+             LEFT JOIN projects_lang AS pl ON p.p_id = pl.pl_p_id AND pl.pl_lang = 'ru'
+             LEFT JOIN projects_photos AS pp ON pp.pp_p_id = p.p_id
+             WHERE 
+                p.p_state = 1 
+                AND p.p_id = 4
+                AND p.p_current < p.p_need
+             LIMIT 1
+        " URI: /ru/projects/4-chet-proekt/
+2013.12.21 20:29:06 [f:"/var/www/roketk12393/data/www/blago_library/fw/model.php", l:"122"] Невозможно создать кэш базы данынх! "
+            SELECT 
+                p.*,
+                pl.*,
+                GROUP_CONCAT(DISTINCT pp.pp_src ORDER BY pp.pp_ord SEPARATOR ',') AS images
+             FROM projects AS p
+             LEFT JOIN projects_lang AS pl ON p.p_id = pl.pl_p_id AND pl.pl_lang = 'ru'
+             LEFT JOIN projects_photos AS pp ON pp.pp_p_id = p.p_id
+             WHERE 
+                p.p_state = 1 
+                AND p.p_id = 4
+                AND p.p_current < p.p_need
+             LIMIT 1
+        " URI: /ru/projects/4-chet-proekt/
+2013.12.22 16:18:32 [f:"/var/www/roketk12393/data/www/blago_library/fw/view.php", l:"182"] Отсутствует файл шаблона контента! Controller = /var/www/roketk12393/data/www/blago_library/view/user/profile.phtmlURI: /ua/user/profile/
+2013.12.24 17:42:45 [f:"/var/www/roketk12393/data/www/blago_library/classes/user.php", l:"139"] Нельза записать антиспам ключURI: /ru/user/registration/
+2013.12.24 17:43:16 [f:"/var/www/roketk12393/data/www/blago_library/classes/user.php", l:"138"] Нельза записать антиспам ключURI: /ru/user/registration/
+2013.12.25 01:48:52 [f:"/var/www/roketk12393/data/www/blago_library/fw/view.php", l:"182"] Отсутствует файл шаблона контента! Controller = /var/www/roketk12393/data/www/blago_library/view/user/profile.phtmlURI: /ru/user/profile/
+2013.12.25 17:08:34 [f:"/var/www/roketk12393/data/www/blago_library/classes/donors.php", l:"123"] Ошибка обновления данных пользователяURI: /ru/donors/2/
+2013.12.25 17:08:39 [f:"/var/www/roketk12393/data/www/blago_library/classes/donors.php", l:"123"] Ошибка обновления данных пользователяURI: /ru/donors/2/
+2013.12.25 17:18:29 [f:"/var/www/roketk12393/data/www/blago_library/classes/donors.php", l:"114"] Ошибка загрузки аватараURI: /ru/donors/2/
+2013.12.26 02:36:31 [f:"/var/www/roketk12393/data/www/blago_library/classes/donors.php", l:"142"] Ошибка обновления данных пользователяURI: /ru/donors/2/
+2013.12.26 02:36:56 [f:"/var/www/roketk12393/data/www/blago_library/classes/donors.php", l:"142"] Ошибка обновления данных пользователяURI: /ru/donors/2/
+2013.12.26 02:38:41 [f:"/var/www/roketk12393/data/www/blago_library/classes/donors.php", l:"142"] Ошибка обновления данных пользователяURI: /ru/donors/2/
+2014.01.14 17:12:45 [f:"/var/www/lovech14458/data/www/blago_library/fw/view.php", l:"143"] Отсутствует javascript файл! Template = /var/www/lovech14458/data/www/blago_library/js/jquery.lightbox-0.5.jsURI: /ru/projects/2-vtoroy-proekt/
+2014.01.22 14:54:24 Can't send email!
+2014.01.22 15:01:04 Can't send email!
+2014.01.23 00:39:27 Can't send email!
+2014.01.28 12:21:59 Can't send email!

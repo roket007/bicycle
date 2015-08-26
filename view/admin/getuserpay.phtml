@@ -1,0 +1,8 @@
+<?php if( is_array($this->data) ) : ?>
+    <?php foreach($this->data as $key => $per_data) : ?>
+        <div calss="per_user_pay">
+            Сумма: <span class="pp_sum"><?= $per_data->pp_sum ?></span>&nbsp;&nbsp;
+            (<span class="pp_data"><?= date( "d.m.Y H:i:s", strtotime($per_data->pp_data) ) ?></span>)
+        </div>
+    <?php endforeach; ?>
+<?php endif; ?>

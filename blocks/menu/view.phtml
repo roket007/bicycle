@@ -1,0 +1,11 @@
+<nav class="grid-70 mobile-grid-100 tablet-grid-75">
+    <ul>
+        <?php if ($this->data) : ?>
+            <?php foreach ($this->data as $key => $value) : ?>
+                <li <?php if($value->m_url == $this->current) : ?>class="active"<?php endif; ?>>
+                    <a href="<?= ($value->m_url == 'index' ? C::site_host . DS . (C::$lang == 'ua' ? '' : C::$lang . DS) : C::site_host . DS . (C::$lang == 'ua' ? '' : C::$lang . DS) . $value->m_url . DS) ; ?>" title="<?= $value->m_name; ?>"><?= $value->m_name; ?></a>
+                </li>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </ul>
+</nav>

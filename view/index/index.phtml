@@ -1,0 +1,50 @@
+<?php $count_data = count($this->data) ; ?>
+<?php if($count_data) : ?>
+    <section id="last_articles" class="hide-on-mobile"> 
+            <div class="grid-container">
+                <div class="grid-100 mobile-grid-100 tablet-grid-100 separator"> 
+                    <?php foreach($this->data as $key => $value) : ?>
+                        <div class="grid-50 mobile-grid-100 tablet-grid-50">
+                            <img alt="<?= $value->pl_title ?>" src="/images/cropr_200x150/<?= array_shift( explode(",", $value->images) ) ?>" width="200" height="150">
+                            <span class="article_title"><?= $value->pl_title ?></span> 
+                            <?= array_shift( explode('{read_more}', $value->pl_text) ) ?>
+                            <a class="readmore" href="<?= C::uri( array('projects', $value->p_id . '-' . $value->pl_alias) ) ?>"><?= C::getLanguageString('readmore_project') ?></a>
+                        </div>
+                        <?php if( !( ($key + 1) % 2 ) && $count_data != ($key + 1) ) : ?>
+                            </div>
+                            <div class="grid-100 mobile-grid-100 tablet-grid-100 separator">
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </div>
+            </div> 
+    </section>
+<?php endif; ?>
+
+<?= $this->text ?>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('.liqpay_rules').click(function(e) {
+                e.preventDefault();
+                var id = '#dialog';
+                var maskHeight = $(document).height();
+                var maskWidth = $(window).width();
+                $('#mask').css( {width : maskWidth, height : maskHeight} );
+                $('#mask').fadeIn(200);
+                var winH = $(window).height();
+                var winW = $(window).width();
+                $(id).css('top',  winH/2-$(id).height()/2);
+                $(id).css('left', winW/2-$(id).width()/2);
+                $(id).fadeIn(200);
+        });
+
+        $('.window .close-modal').click(function (e) {
+                e.preventDefault();
+                $('#mask, .window').hide();
+        });
+
+        $('#mask').click(function () {
+                $(this).hide();
+                $('.window').hide();
+        });
+    });
+</script>

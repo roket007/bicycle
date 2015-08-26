@@ -1,0 +1,24 @@
+<div class="grid-100 tablet-grid-100">
+    <div id="footer_nav" class="grid-75 tablet-grid-75">
+        <ul>
+            <?php if ($this->data) : ?>
+                <?php foreach ($this->data as $key => $value) : ?>
+                    <li <?php if($value->m_url == $this->current) : ?>class="active"<?php endif; ?>>
+                        <a href="<?= ($value->m_url == 'index' ? C::site_host . DS . (C::$lang == 'ua' ? '' : C::$lang . DS) : C::site_host . DS . (C::$lang == 'ua' ? '' : C::$lang . DS) . $value->m_url . DS) ; ?>" title="<?= $value->m_name; ?>"><?= $value->m_name; ?></a>
+                    </li>
+                    <?= ( $key <= ( count($this->data) - 2 ) ? '/' : '' ) ?>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </ul>
+    </div>
+    <div class="grid-25 tablet-grid-25">
+        <div id="search">
+            <?php if( strpos($_SERVER['REQUEST_URI'], '/search') === false ) : ?>
+                <form action="<?= C::uri( array('search') ) ?>" method="post">
+                    <input id="searchword" type="text" onfocus="if (this.value=='<?= C::getLanguageString('search') ?>') this.value='';" onblur="if (this.value=='') this.value='<?= C::getLanguageString('search') ?>';" value="<?= C::getLanguageString('search') ?>" size="30" maxlength="40" name="query">
+                    <input id="button_finder" type="image" onclick="" src="/img/button_finder.png" value="<?= C::getLanguageString('searching') ?>">
+                </form>
+            <?php endif; ?>
+        </div> 
+    </div>
+</div>

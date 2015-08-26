@@ -1,0 +1,247 @@
+<script src="/js/jquery-1.6.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="/js/jquery-ui-1.8.13.custom.min.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" href="/css/smoothness/jquery-ui-1.8.13.custom.css" type="text/css" media="screen" charset="utf-8">
+<script src="/js/elrte.min.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" href="/css/elrte.min.css" type="text/css" media="screen" charset="utf-8">
+<script src="/js/i18n/elrte.ru.js" type="text/javascript" charset="utf-8"></script>
+<style>
+    .lang-title {
+        text-align: center;
+        font-size: 16px;
+        font-weight: bold;
+        background: #FF7F0B;
+        color: #fff;
+    }
+    
+    .add-path {
+        font-size: 20px;
+        color: green;
+        cursor: pointer;
+        background: #f1f1f1;
+        border: 1px solid #000;
+        border-radius: 5px;
+    }
+    
+    .add-path:hover {
+        background: #ddd;
+    }
+    
+    .delete-path {
+        font-size: 20px;
+        color: red;
+        cursor: pointer;
+        background: #f1f1f1;
+        border: 1px solid #000;
+        border-radius: 5px;
+    }
+    
+    .delete-path:hover {
+        background: #ddd;
+    }
+    
+    .lang-pack {
+        height: 200px;
+        overflow: auto;
+    }
+    
+    .selected {
+        background-color: #FF7F0B;
+        color: #fff;
+    }
+    
+    .per_data {
+        border:1px solid #000;
+        padding: 2px;
+    }
+    
+    .per_data:hover {
+        background-color: #ccc;
+        cursor: pointer;
+    }
+</style>
+<div style="margin:10px auto; width: 60%;">
+    <div id="langs">
+        <?php foreach($this->langs as $key => $per_lang) : ?>
+            <div style="float: <?= ( ($key + 1) == count($this->langs) ? 'right' : 'left') ?>; width: <?= ( 95 / count($this->langs) ) ?>%;">
+                <div class="lang-title"><?= $per_lang ?></div>
+                <div id="<?= $per_lang ?>" class="lang-pack pack-<?= $per_lang ?>">
+                    <?php foreach($this->data as $per_data) : ?>
+                            <?php if($per_data->sp_lang == $per_lang) : ?>
+                                <div  class="per_data" data-mdc="<?= $per_data->sp_mdc_id ?>" data-mda="<?= $per_data->sp_mda_id ?>" lang="<?= $per_data->sp_lang ?>" id="<?= $per_data->sp_id ?>">
+                                    <div style="display: none;" class="content"><?= $per_data->sp_body ?></div>
+                                    /<span id="mdc_controller"><?= $per_data->mdc_controller ?></span>/<span id="mda_action"><?= $per_data->mda_action ?></span>/<span> - <?= $per_data->mda_name ?></span>
+                                </div>
+                            <?php endif; ?>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+    <div class="edit-form" style="margin-top: 20px;">
+        <p>Контроллер: 
+            <select id="controllers-path">
+                <?php foreach($this->paths as $key => $per_path) : ?>
+                    <option id="<?= ( !empty($per_path->mdc_actions) ? $per_path->mdc_actions : 0 ) ?>" value="<?= $per_path->mdc_id ?>" ><?= $per_path->mdc_controller ?></option>
+                <?php endforeach; ?>
+            </select>
+        </p>
+        <p>Экшен (страница): 
+            <select id="actions-path">
+                <?php if( isset($this->paths[0]) && !empty($this->paths[0]->mdc_actions) ) : ?>
+                    <?php $actions = explode(",", $this->paths[0]->mdc_actions); ?>
+                    <?php foreach($actions as $per_action) : ?>
+                        <?php list($action_id, $action_path) = explode(":", $per_action); ?>
+                        <option value="<?= $action_id ?>"><?= $action_path ?></option>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </select>
+        </p>
+        <p>Язык: 
+            <select id="lang-paths">
+                <?php foreach($this->langs as $key => $path_lang) : ?>
+                    <option value="<?= $path_lang?>"><?= $path_lang?></option>
+                <?php endforeach; ?>
+            </select>
+        </p>
+        <div id="content">
+        </div>
+        <p><input rel="/admin/savestaticpage/" id="save-path" type="button" value="Сохранить" /></p>
+    </div>
+    <script type="text/javascript">
+        $().ready(function() {
+            var opts = {
+                lang         : 'ru',   // set your language
+                styleWithCSS : false,
+                height       : 400,
+                toolbar      : 'maxi'
+            };
+            
+            $('#content').elrte(opts);
+            // var editor = new elRTE(document.getElementById('our-element'), opts);
+        });
+        
+        var _change_controller_action = function(data) {
+            if (typeof data == "string") {
+                var _data = data;
+            } else {
+                var _data = $( $(this).find('option:selected').get(0) ).attr('id');
+            }
+
+            if(_data !== '0') {
+                var _html = [];
+                var _exploded_action = _data.split(',');
+                
+                for(var _key in  _exploded_action) {
+                    var _per_action_data = _exploded_action[_key].split(':');
+                    _html.push('<option value="' + _per_action_data[0] + '">' + _per_action_data[1] + '</option>');
+                }
+                
+                $('#actions-path').html( _html.join("\n") );
+            } else {
+                $('#actions-path').html('');
+            }
+        };
+        
+        $('#controllers-path').bind("change", _change_controller_action);
+        
+        var _clear_form = function() {
+            $('#content').elrte('val', ' ');
+        };
+        
+        var _select_path = function() {
+            if( $(this).hasClass('selected') ) {
+                $(this).removeClass('selected');
+                $('#save-path').attr('rel', '/admin/savestaticpage/');
+                $('#save-path').val('Сохранить');
+                _clear_form();
+            } else {
+                $('.per_data').removeClass('selected');
+                $('#save-path').attr('rel', '/admin/updatestaticpage/');
+                $('#save-path').val('Обновить');
+                $(this).addClass('selected');
+                var _lang = $(this).attr('lang');
+                var _data = $( $(this).find('.content').get(0) ).html();
+                //alert(_data);
+                var _controller = $(this).data('mdc');
+                var _action = $(this).data('mda');
+                $('#lang-paths').val(_lang);
+                $('#controllers-path').val(_controller);
+                $('#actions-path').html('');
+                _change_controller_action( $("#controllers-path option:selected").attr('id') );
+                $('#actions-path').val(_action);
+                $('#content').elrte('val', _data);
+            }
+        };
+        
+        $('.per_data').bind("click", _select_path);
+        
+        $('#save-path').click(function() {
+            if( $(this).attr('rel') == '/admin/savestaticpage/' ) {
+                $.post(
+                    $(this).attr('rel'),
+                    {
+                        sp_mdc_id : $('#controllers-path').val(),
+                        sp_mda_id : $('#actions-path').val(),
+                        sp_lang : $('#lang-paths').val(),
+                        sp_body : $('#content').elrte('val'),
+                    },
+                    function(data) {
+                        if(data == '0') {
+                            alert('Текст для данного раздела уже написан!');
+                        } else {
+                            $( '.pack-' + $('#lang-paths').val() ).append('\
+                                <div  class="per_data" data-mdc="' + $('#controllers-path').val() + '" data-mda="' + $('#actions-path').val() + '" lang="' + $('#lang-paths').val() + '" id="' + data + '">\
+                                    <div style="display: none;" class="content">' + $('#content').elrte('val') + '</div>\
+                                    /<span id="mdc_controller">' + $('#controllers-path option:selected').html() + '</span>/<span id="mda_action">' + $('#actions-path option:selected').html() + '</span>/\
+                                </div>\
+                            ');
+    
+                            $('.per_data').unbind("click");
+                            $('.per_data').bind("click", _select_path);
+                            _clear_form();
+                            alert('Успешно СОХРАНЕНО');
+                        }
+                    }
+                )
+            } else {
+                $.post(
+                    $(this).attr('rel'),
+                    {
+                        sp_id : $('.per_data.selected').attr('id'),
+                        sp_mdc_id : $('#controllers-path').val(),
+                        sp_mda_id : $('#actions-path').val(),
+                        sp_lang : $('#lang-paths').val(),
+                        sp_body : $('#content').elrte('val'),
+                    },
+                    function(data) {
+                        if(data == '0') {
+                            alert('Текст для данного раздела уже написан!');
+                        } else {
+                            if( $('.per_data.selected').attr('lang') !== $('#lang-paths').val() ) {
+                                $( '.pack-' + $('#lang-paths').val() ).append('\
+                                    <div  class="per_data" data-mdc="' + $('#controllers-path').val() + '" data-mda="' + $('#actions-path').val() + '" lang="' + $('#lang-paths').val() + '" id="' + $('.per_data.selected').attr('id') + '">\
+                                        <div style="display: none;" class="content">' + $('#content').elrte('val') + '</div>\
+                                        /<span id="mdc_controller">' + $('#controllers-path option:selected').html() + '</span>/<span id="mda_action">' + $('#actions-path option:selected').html() + '</span>/\
+                                    </div>\
+                                ');
+                                $('.per_data.selected').remove();
+                                _clear_form();
+                            } else {
+                                $('.per_data.selected').data( 'mdc', $('#controllers-path').val() );
+                                $('.per_data.selected').data( 'mda', $('#actions-path').val() );
+                                $('.per_data.selected').data( 'lang', $('#lang-paths').val() );
+                                $( $('.per_data.selected').find('.content').get(0) ).html( $('#content').elrte('val') );
+                            }
+                            
+                            $('.per_data').unbind("click");
+                            $('.per_data').bind("click", _select_path);
+                            _clear_form();
+                            alert('Успешно ОБНОВЛЕНО');
+                        }
+                    }
+                )
+            }
+            
+        });
+    </script>
+</div>

@@ -1,0 +1,20 @@
+<div class="grid-container"> 
+    <div class="grid-100 mobile-grid-100 tablet-grid-100"> 
+        <div id="main_content" class="clearfix">
+            <div class="login-form-label">
+                <h1><?= C::getLanguageString('enter') ?></h1>
+            </div>
+            <div class="login-form-field">
+                <form action="<?= '/' . C::$lang ?>/user/login/" method="POST">
+                    <?php if($this->errorLogin): ?>
+                        <p style="color: red;" class="form-error">Вы ввели неправильный логин и/или пароль</p>
+                    <?php endif; ?>
+                    <p><input type="text" name="login" placeholder="<?= C::getLanguageString('login') ?>" /></p>
+                    <p><input type="password" name="password" placeholder="<?= C::getLanguageString('password') ?>" /></p>
+                    <input type="hidden" name="referer" value="<?= base64_encode($this->referer) ?>" />
+                    <p><input type="submit" value="<?= C::getLanguageString('entering') ?>" /></p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
